@@ -1,16 +1,11 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "Vector.h"
-
+#include <vector>
 #include <SFML\Graphics.hpp>
 
 typedef unsigned int Uint;
-
 const int SKY = 33;
-
-enum { GAUCHE, DROITE, HAUT, BAS } ;
-
 
 class Map
 {
@@ -18,7 +13,7 @@ class Map
         Map();
         Map(const sf::Image& ) ;
         void createFrom(const sf::Image& ) ;
-        void onDraw(sf::RenderWindow&, Vector<sf::Image>& ) ;
+        void onDraw(sf::RenderWindow&, std::vector<sf::Image>& ) ;
 
         bool detectCollision(const sf::Vector2f& , int = -1) ;
 

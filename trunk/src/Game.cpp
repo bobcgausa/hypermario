@@ -1,17 +1,23 @@
 #include "Game.h"
 
-using namespace std;
+#include <stdexcept>
+#include <iostream>
 
-#include <cmath>
-
-Game::Game() : sf::RenderWindow(sf::VideoMode(640, 480), "Mario")
+Game::Game() : sf::RenderWindow(sf::VideoMode(SCREEN_HEIGHT, SCREEN_WIDHT), "Mario"), mario_()
 {
-    createTiles(tiles_);
+    try
+    {
+        createTiles();
+    }
+    catch (const std::runtime_error& e)
+    {
+        std::cerr << e.what() << std::endl;
+        throw;
+    }
 }
 
 Game::~Game()
 {
-
 }
 
 void Game::loadMap(const sf::Image& map)
@@ -49,10 +55,9 @@ void Game::onEvent()
             Close();
     }
 
-
     if (I.IsKeyDown(sf::Key::Right))
     {
-        if (lastTime > 0.005 && !map_.detectCollision(marioPos, DROITE))
+        if (lastTime > 0.005 && !map_.detectCollision(marioPos, RIGHT))
         {
             mario_.x()++;
             clock_.Reset();
@@ -60,7 +65,7 @@ void Game::onEvent()
     }
     else if (I.IsKeyDown(sf::Key::Left))
     {
-        if (lastTime > 0.005 && !map_.detectCollision(marioPos, GAUCHE))
+        if (lastTime > 0.005 && !map_.detectCollision(marioPos, LEFT))
         {
             mario_.x()--;
             clock_.Reset();
@@ -68,7 +73,7 @@ void Game::onEvent()
     }
     if (I.IsKeyDown(sf::Key::Up))
     {
-        if (lastTime > 0.005 && !map_.detectCollision(marioPos, HAUT))
+        if (lastTime > 0.005 && !map_.detectCollision(marioPos, UP))
         {
             mario_.jump();
             clock_.Reset();
@@ -76,7 +81,7 @@ void Game::onEvent()
     }
     else if (I.IsKeyDown(sf::Key::Down))
     {
-        /*if (lastTime > 0.005 && !map_.detectCollision(marioPos, BAS))
+        /*if (lastTime > 0.005 && !map_.detectCollision(marioPos, DOWN))
         {
             clock_.Reset();
             mario_.y()++;
@@ -86,7 +91,7 @@ void Game::onEvent()
     // Si Mario saute et que la case du dessus n'est pas le ciel
     if (mario_.status() == JUMP)
     {
-        if (!map_.detectCollision(marioPos, HAUT))
+        if (!map_.detectCollision(marioPos, UP))
             mario_.doJump();
         else
             mario_.isFalling(), puts("PASSADE");
@@ -94,7 +99,7 @@ void Game::onEvent()
     }
     else if (mario_.status() == FALL)
     {
-        if (!map_.detectCollision(marioPos, BAS)) mario_.doJump();
+        if (!map_.detectCollision(marioPos, DOWN)) mario_.doJump();
         else
             mario_.isOnTheGround();
     }
@@ -102,56 +107,59 @@ void Game::onEvent()
     if (I.IsMouseButtonDown(sf::Mouse::Right))
     {
         system("cls");
-        cout << mario_.x() / 32 << " et " << mario_.y() / 32 << endl;
+        std::cout << mario_.x() / 32 << " et " << mario_.y() / 32 << std::endl;
     }
-    /*system("cls");
-    cout << mario_.x() / 32 << " et " << mario_.y() / 32 << std::endl;*/
 }
+
+/** Toute la fonction est à corriger (remplacer les casts et modifier les conditions) **/
 
 bool Map::detectCollision(const sf::Vector2f& pos, int direction)
 {
-    /*if ((static_cast<int>(pos.y + 1) % 32) != 0 && map_[static_cast<int>(pos.x / 32)][static_cast<int>(pos.y / 32)] != SKY)
-        return true;*/
-
-    if (direction == HAUT || direction == BAS)
+    if (direction == UP || direction == DOWN)
     {
         if (static_cast<int>(pos.y) % 32 == 0)
         {
-            cout << static_cast<int>(pos.x / 32) << " et " << static_cast<int>(pos.y / 32) + (direction == HAUT ? -1 : 1) << endl;
-            if (map_[static_cast<int>(pos.x / 32)][static_cast<int>(pos.y / 32) + (direction == HAUT ? -1 : 1)] != SKY)
-                    return true;
-            /*else if (map_[static_cast<int>(pos.x / 32)][static_cast<int>(pos.y / 32) + (direction == HAUT ? -1 : 1)] == SKY &&
-                     map_[static_cast<int>((pos.x + 30) / 32)][static_cast<int>(pos.y / 32) + (direction == HAUT ? -1 : 1)] != SKY)
+            if (map_[static_cast<int>(pos.x / 32)][static_cast<int>(pos.y / 32) + (direction == UP ? -1 : 1)] != SKY)
+                return true;
+            /*else if (map_[static_cast<int>(pos.x / 32)][static_cast<int>(pos.y / 32) + (direction == UP ? -1 : 1)] == SKY &&
+                     map_[static_cast<int>((pos.x + 30) / 32)][static_cast<int>(pos.y / 32) + (direction == UP ? -1 : 1)] != SKY)
                 return true;*/
         }
     }
-    else if (direction == DROITE || direction == GAUCHE)
+    else if (direction == RIGHT || direction == LEFT)
     {
         if (static_cast<int>(pos.x) % 32 == 0)
         {
-            if (map_[static_cast<int>(pos.x / 32) + (direction == DROITE ? 1 : -1)][static_cast<int>(pos.y / 32)] != SKY)
+            if (map_[static_cast<int>(pos.x / 32) + (direction == RIGHT ? 1 : -1)][static_cast<int>(pos.y / 32)] != SKY)
                 return true;
-            /*else if (map_[static_cast<int>(pos.x / 32) + (direction == DROITE ? 1 : -1)][static_cast<int>(pos.y / 32)] == SKY &&
-                     map_[static_cast<int>(pos.x / 32) + (direction == DROITE ? 1 : -1)]
-                     [static_cast<int>(pos.y / 32) + (direction == DROITE ? 1 : -1)] != SKY)
+            /*else if (map_[static_cast<int>(pos.x / 32) + (direction == RIGHT ? 1 : -1)][static_cast<int>(pos.y / 32)] == SKY &&
+                     map_[static_cast<int>(pos.x / 32) + (direction == RIGHT ? 1 : -1)]
+                     [static_cast<int>(pos.y / 32) + (direction == RIGHT ? 1 : -1)] != SKY)
                 return true;*/
         }
     }
     return false;
 }
 
-void createTiles(Vector<sf::Image>& tiles)
+void Game::createTiles()
 {
     sf::Image allTiles;
-    if (!allTiles.LoadFromFile("tiles.bmp"))
-        std::cerr << "There is an error" << std::endl;
-
-    tiles.resize(7);
-
-    for (Uint i = 0; i < tiles.size(); i++)
+    try
     {
-        tiles[i].Create(32, 32);
-        tiles[i].Copy(allTiles, 0, 0, sf::IntRect(i * 32, 0, (i + 1) * 32, 32));
-        tiles[i].CreateMaskFromColor(sf::Color(208, 214, 226));
+        if (!allTiles.LoadFromFile("media/tile2s.bmp"))
+            throw std::runtime_error("Can't open media/tiles.bmp");
+    }
+    catch (const std::exception& e)
+    {
+        throw;
+    }
+
+    tiles_.resize(7);
+
+    for (Uint i = 0; i < tiles_.size(); i++)
+    {
+        tiles_[i].Create(32, 32);
+        tiles_[i].Copy(allTiles, 0, 0, sf::IntRect(i * 32, 0, (i + 1) * 32, 32));
+        tiles_[i].CreateMaskFromColor(sf::Color(208, 214, 226));
     }
 }
