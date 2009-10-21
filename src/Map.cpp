@@ -1,8 +1,5 @@
 #include "Map.h"
 
-#include <iostream>
-#include <SFML\Graphics.hpp>
-
 Map::Map()
 {
 
@@ -15,7 +12,7 @@ Map::Map(const sf::Image& Map)
 
 void Map::createFrom(const sf::Image& Map)
 {
-    Vector<sf::Color> colorToTile;
+    std::vector<sf::Color> colorToTile;
     colorToTile.resize(7);
     colorToTile[0] = sf::Color(255, 0, 0);
     colorToTile[1] = sf::Color(255, 102, 0);
@@ -57,7 +54,7 @@ void Map::createFrom(const sf::Image& Map)
     }
 }
 
-void Map::onDraw(sf::RenderWindow& App, Vector<sf::Image>& tiles)
+void Map::onDraw(sf::RenderWindow& App, std::vector<sf::Image>& tiles)
 {
     for (int i = 0; i < width_; ++i)
     {
