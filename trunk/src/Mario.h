@@ -1,5 +1,5 @@
-#ifndef MARIO_H_INCLUDED
-#define MARIO_H_INCLUDED
+#ifndef MARIO_H
+#define MARIO_H
 
 #include <SFML/Graphics.hpp>
 
@@ -12,16 +12,16 @@ class Mario
 
         void onDraw(sf::RenderWindow& ) ;
 
-        void operator++(); // Incrémente la position x
-        void operator--(); // Décrémente " "
+        void operator++() ; // Incrémente la position x
+        void operator--() ; // Décrémente " "
 
         float& y() ;
         float& x() ;
 
         sf::Vector2f pos() const;
 
-        void jump();
-        void doJump();
+        void jump( );
+        void doJump() ;
 
         void isOnTheGround() ;
         void isFalling() ;
@@ -44,4 +44,4 @@ class Mario
 
 
 
-#endif // MARIO_H_INCLUDED
+#endif // MARIO_H
