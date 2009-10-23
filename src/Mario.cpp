@@ -1,25 +1,22 @@
 #include "Mario.h"
+#include "Game.h"
 
-#include <SFML/Graphics.hpp>
-
-#include <iostream>
 #include <stdexcept>
 
 Mario::Mario()
 {
-    sf::Image* img_ = NULL;
+    img_ = NULL;
     try
     {
         img_ = new sf::Image;
         if (!img_->LoadFromFile("media/mario.bmp"))
-            throw std::runtime_error("Can't open media/mario.bmp");
+            throw std::runtime_error("File can't be open");
     }
     catch (const std::runtime_error& e)
     {
-        std::cerr << e.what() << std::endl;
         throw;
     }
-    img_->CreateMaskFromColor(sf::Color(208, 214, 226));
+    img_->CreateMaskFromColor(mask);
 
     pos_.x = 160;
     pos_.y = 384;
