@@ -2,23 +2,23 @@
 
 Game::Game() : sf::RenderWindow(sf::VideoMode(640, 480), "Hyper Mario")
 {
-
+    m_mario = new Mario(&m_map);
 }
 
 Game::~Game()
 {
-
+    delete m_mario;
 }
 
 void Game::drawAll(void)
 {
     m_map.drawMap(*this);
-    Draw(m_mario);
+    Draw(*m_mario);
 }
 
 void Game::evolue(void)
 {
-
+    
 }
 
 void Game::checkEvent(void)
@@ -31,5 +31,11 @@ void Game::checkEvent(void)
         this->Close();
 
     if (input.IsKeyDown(sf::Key::Right))
-        m_mario.Move(1, 0);
+        m_mario->evolue(RIGHT);
+
+    if (input.IsKeyDown(sf::Key::Left))
+        m_mario->evolue(LEFT);
+
+    if (input.IsKeyDown(sf::Key::Up))
+        m_mario->evolue(JUMP);
 }

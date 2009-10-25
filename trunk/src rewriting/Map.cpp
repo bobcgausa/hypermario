@@ -57,7 +57,7 @@ Map::Map()
             m_tiles[i][j].spr.SetX(static_cast<float>(i * 32));
             m_tiles[i][j].spr.SetY(static_cast<float>(j * 32));
         }
-    }
+    } 
 }
 
 void Map::drawMap(sf::RenderWindow& game)
@@ -70,3 +70,9 @@ void Map::drawMap(sf::RenderWindow& game)
         }
     }
 }
+
+s_Tiles& Map::getTiles(int x, int y)
+{
+    return m_tiles[x][y];
+}
+
