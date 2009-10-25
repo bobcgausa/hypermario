@@ -20,6 +20,7 @@ class Map
 public:
     Map();
     void drawMap(sf::RenderWindow&);
+    s_Tiles& getTiles(int, int);
 
 private:
     std::vector<std::vector<s_Tiles> > m_tiles;

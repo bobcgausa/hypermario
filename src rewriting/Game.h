@@ -3,8 +3,6 @@
 
 #include <SFML/Graphics.hpp>
 
-enum {LEFT, RIGHT, UP, DOWN};
-
 const sf::Color mask(208, 214, 226);
 
 #include "Map.h"
@@ -25,7 +23,7 @@ public:
 
 private:
     Map m_map;
-    Mario m_mario;
+    Mario* m_mario;
 };
 
 #endif // GAME_H
