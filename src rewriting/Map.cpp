@@ -5,21 +5,21 @@ Map::Map()
     sf::Image map, tiles;
 
     map.LoadFromFile("media/map.bmp");
-    m_tiles.resize(map.GetWidth(), std::vector<s_Tiles>(map.GetHeight()));
+    _tiles.resize(map.GetWidth(), std::vector<s_Tiles>(map.GetHeight()));
 
     tiles.LoadFromFile("media/tiles.bmp");
-    m_img_tiles.resize(tiles.GetWidth() / 32 + 1);
+    _img_tiles.resize(tiles.GetWidth() / 32 + 1);
 
     const sf::Color mask(208, 214, 226);
 
-    for (int i = 0; i < (m_img_tiles.size() - 1); ++i)
+    for (int i = 0; i < (_img_tiles.size() - 1); ++i)
     {
-        m_img_tiles[i].Create(32, 32);
-        m_img_tiles[i].Copy(tiles, 0, 0, sf::IntRect(i * 32, 0, (i + 1) * 32, 32));
-        m_img_tiles[i].CreateMaskFromColor(mask);
+        _img_tiles[i].Create(32, 32);
+        _img_tiles[i].Copy(tiles, 0, 0, sf::IntRect(i * 32, 0, (i + 1) * 32, 32));
+        _img_tiles[i].CreateMaskFromColor(mask);
     }
 
-    m_img_tiles[m_img_tiles.size() - 1].Create(32, 32, sf::Color(0, 0, 255));
+    _img_tiles[_img_tiles.size() - 1].Create(32, 32, sf::Color(0, 0, 255));
 
     for (unsigned int i = 0; i < map.GetWidth(); ++i)
     {
@@ -51,28 +51,28 @@ Map::Map()
             else if (map.GetPixel(i, j) == sf::Color::Color(155, 231, 54))
                 type = TUBE_BOTTOM2;
 
-            m_tiles[i][j].type = type;
-            m_tiles[i][j].spr.SetImage(m_img_tiles[type]);
+            _tiles[i][j].type = type;
+            _tiles[i][j].spr.SetImage(_img_tiles[type]);
 
-            m_tiles[i][j].spr.SetX(static_cast<float>(i * 32));
-            m_tiles[i][j].spr.SetY(static_cast<float>(j * 32));
+            _tiles[i][j].spr.SetX(static_cast<float>(i * 32));
+            _tiles[i][j].spr.SetY(static_cast<float>(j * 32));
         }
-    } 
+    }
 }
 
 void Map::drawMap(sf::RenderWindow& game)
 {
-    for (int i = 0; i < m_tiles.size(); ++i)
+    for (int i = 0; i < _tiles.size(); ++i)
     {
-        for (int j = 0; j < m_tiles[i].size(); ++j)
+        for (int j = 0; j < _tiles[i].size(); ++j)
         {
-            game.Draw(m_tiles[i][j].spr);
+            game.Draw(_tiles[i][j].spr);
         }
     }
 }
 
 s_Tiles& Map::getTiles(int x, int y)
 {
-    return m_tiles[x][y];
+    return _tiles[x][y];
 }
 
