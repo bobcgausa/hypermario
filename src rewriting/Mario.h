@@ -16,7 +16,6 @@ public:
 
     void evolue(WHAT action = ON_THE_GROUND);
 
-    const WHAT status() const;
     WHAT& status() ;
 
 private:
