@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <iostream>
 
 // Commentataion
 
@@ -20,7 +21,7 @@ void Game::drawAll(void)
 
 void Game::evolue(void)
 {
-
+    _mario->evolue();
 }
 
 void Game::checkEvent(void)
@@ -29,9 +30,11 @@ void Game::checkEvent(void)
     sf::Event Event;
     this->GetEvent(Event);
 
+    // close window
     if (Event.Type == sf::Event::Closed)
         this->Close();
 
+    // direction control
     if (input.IsKeyDown(sf::Key::Right))
         _mario->evolue(RIGHT);
 
@@ -39,12 +42,6 @@ void Game::checkEvent(void)
         _mario->evolue(LEFT);
 
     if (input.IsKeyDown(sf::Key::Up))
-        _mario->status() = JUMP;
-
-    if (_mario->status() == JUMP)
-        _mario->evolue(JUMP);
-    if (_mario->status() == FALL)
-        _mario->evolue(FALL);
-
-
+        if (_mario->status() == ON_THE_GROUND)
+            _mario->status() = JUMP;
 }
