@@ -1,24 +1,26 @@
 #include "Game.h"
 
+// Commentataion
+
 Game::Game() : sf::RenderWindow(sf::VideoMode(640, 480), "Hyper Mario")
 {
-    m_mario = new Mario(&m_map);
+    _mario = new Mario(&_map);
 }
 
 Game::~Game()
 {
-    delete m_mario;
+    delete _mario;
 }
 
 void Game::drawAll(void)
 {
-    m_map.drawMap(*this);
-    Draw(*m_mario);
+    _map.drawMap(*this);
+    Draw(*_mario);
 }
 
 void Game::evolue(void)
 {
-    
+
 }
 
 void Game::checkEvent(void)
@@ -26,16 +28,23 @@ void Game::checkEvent(void)
     const sf::Input& input = this->GetInput();
     sf::Event Event;
     this->GetEvent(Event);
-    
+
     if (Event.Type == sf::Event::Closed)
         this->Close();
 
     if (input.IsKeyDown(sf::Key::Right))
-        m_mario->evolue(RIGHT);
+        _mario->evolue(RIGHT);
 
     if (input.IsKeyDown(sf::Key::Left))
-        m_mario->evolue(LEFT);
+        _mario->evolue(LEFT);
 
     if (input.IsKeyDown(sf::Key::Up))
-        m_mario->evolue(JUMP);
+        _mario->status() = JUMP;
+
+    if (_mario->status() == JUMP)
+        _mario->evolue(JUMP);
+    if (_mario->status() == FALL)
+        _mario->evolue(FALL);
+
+
 }

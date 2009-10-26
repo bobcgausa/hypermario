@@ -22,8 +22,8 @@ public:
     void evolue(void);
 
 private:
-    Map m_map;
-    Mario* m_mario;
+    Map _map;
+    Mario* _mario;
 };
 
 #endif // GAME_H

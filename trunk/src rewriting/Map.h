@@ -23,8 +23,8 @@ public:
     s_Tiles& getTiles(int, int);
 
 private:
-    std::vector<std::vector<s_Tiles> > m_tiles;
-    std::vector<sf::Image> m_img_tiles;
+    std::vector<std::vector<s_Tiles> > _tiles;
+    std::vector<sf::Image> _img_tiles;
 };
 
 #endif // MAP_H

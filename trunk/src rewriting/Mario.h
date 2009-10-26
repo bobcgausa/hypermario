@@ -8,7 +8,7 @@ enum WHAT
 {
     LEFT, RIGHT, JUMP, FALL, ON_THE_GROUND
 };
- 
+
 class Mario : public sf::Sprite
 {
 public:
@@ -16,11 +16,19 @@ public:
 
     void evolue(WHAT action = ON_THE_GROUND);
 
+    const WHAT status() const;
+    WHAT& status() ;
+
 private:
     void jump(void);
+    void fall(void);
 
-    Map* m_map;
-    sf::Image m_img;
+    Map* _map;
+    sf::Image _img;
+
+    double _vyJ;
+    double _vyF;
+    WHAT _status;
 };
 
 #endif // MARIO_H
