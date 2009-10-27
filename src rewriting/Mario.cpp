@@ -13,24 +13,27 @@ Mario::Mario(Map* map) : sf::Sprite()
     SetY(384.0f);
     SetX(160.0f);
 
-    _vyJ = -3;
+    _vyJ = -4;
     _vyF = 0;
     _status = ON_THE_GROUND;
 }
 
 void Mario::jump(void)
 {
-    this->Move(0, _vyJ);
+    int caseX = static_cast<int>(this->GetPosition().x / 32);
+    int caseY = static_cast<int>(this->GetPosition().y / 32);
 
-    // Si mario attend son point culminant de son saut, alors il tombe
-    if (this->_vyJ >= 0)
+    // Si mario attend son point culminant de son saut, ou si on détecte une collision, alors il tombe
+    if (_vyJ >= 0 || _map->getTiles(caseX, caseY).type != SKY)
     {
-        _vyJ = -3;
         _status = FALL;
+        _vyJ = -4;
+
+        return;
     }
 
-    else
-        this->_vyJ += 0.1;
+    this->Move(0, _vyJ);
+    _vyJ += 0.1;
 }
 
 void Mario::fall(void)
@@ -39,12 +42,11 @@ void Mario::fall(void)
     int caseY = static_cast<int>(this->GetPosition().y / 32);
 
     //if (this->GetSubRect().Intersects(_map->getTiles(caseX, caseY + 1).spr.GetSubRect()))
-    if (_map->getTiles(caseX, caseY + 1).type == GROUND 
-        || _map->getTiles(caseX, caseY + 1).type == BOX
-        || _map->getTiles(caseX, caseY + 1).type == WALL)
+    if (_map->getTiles(caseX, caseY + 1).type != SKY)
     {
         _status = ON_THE_GROUND;
         _vyF = 0;
+
         return;
     }
 
@@ -59,35 +61,40 @@ WHAT& Mario::status()
 
 void Mario::evolue(WHAT action)
 {
-    int caseX = static_cast<int>(this->GetPosition().x / 32);
-    int caseY = static_cast<int>(this->GetPosition().y / 32);
-
-    if (_status == JUMP)
+    if (action == RIGHT || action == LEFT)
     {
-        this->jump();
-    }
+        int caseX = static_cast<int>(this->GetPosition().x / 32);
+        int caseY = static_cast<int>(this->GetPosition().y / 32);
 
-    else if (_status == FALL)
-    {
-        this->fall();
-    }
-
-    else if (action == RIGHT || action == LEFT)
-    {
         int vx = action == RIGHT ? 1 : -1;
 
         /*if (this->GetSubRect().Intersects(_map->getTiles(caseX + action, caseY).spr.GetSubRect())
                 && _map->getTiles(caseX + action, caseY).type != SKY)*/
         if (_map->getTiles(caseX + action, caseY).type != SKY)
-        {
             // collision, on ne se déplace pas
+        {
         }
 
         else
         {
             this->Move(vx, 0);
         }
+
+        if (_status == ON_THE_GROUND && _map->getTiles(caseX, caseY + 1).type == SKY)
+            _status = FALL;
     }
+
+    if (action == JUMP)
+    {
+        this->jump();
+    }
+
+    if (action == FALL)
+    {
+        this->fall();
+    }
+
+
 }
 
 

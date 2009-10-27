@@ -18,6 +18,8 @@ int main(void)
         game.drawAll();
 
         game.Display();
+
+        sf::Sleep(0.001);
     }
 
     return EXIT_SUCCESS;

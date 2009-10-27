@@ -21,7 +21,7 @@ void Game::drawAll(void)
 
 void Game::evolue(void)
 {
-    _mario->evolue();
+    _mario->evolue(_mario->status());
 }
 
 void Game::checkEvent(void)
@@ -42,6 +42,8 @@ void Game::checkEvent(void)
         _mario->evolue(LEFT);
 
     if (input.IsKeyDown(sf::Key::Up))
+    {
         if (_mario->status() == ON_THE_GROUND)
             _mario->status() = JUMP;
+    }
 }
