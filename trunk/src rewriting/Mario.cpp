@@ -24,7 +24,9 @@ void Mario::jump(void)
     int caseY = static_cast<int>(this->GetPosition().y / 32);
 
     // Si mario attend son point culminant de son saut, ou si on détecte une collision, alors il tombe
-    if (_vyJ >= 0 || _map->getTiles(caseX, caseY).type != SKY)
+    if (_vyJ >= 0 
+        || _map->getTiles(caseX, caseY).type != SKY
+        || _map->getTiles(caseX + 1, caseY).type != SKY)
     {
         _status = FALL;
         _vyJ = -4;
@@ -42,7 +44,8 @@ void Mario::fall(void)
     int caseY = static_cast<int>(this->GetPosition().y / 32);
 
     //if (this->GetSubRect().Intersects(_map->getTiles(caseX, caseY + 1).spr.GetSubRect()))
-    if (_map->getTiles(caseX, caseY + 1).type != SKY)
+    if (_map->getTiles(caseX, caseY + 1).type != SKY
+        || _map->getTiles(caseX + 1, caseY + 1).type != SKY)
     {
         _status = ON_THE_GROUND;
         _vyF = 0;
@@ -70,9 +73,11 @@ void Mario::evolue(WHAT action)
 
         /*if (this->GetSubRect().Intersects(_map->getTiles(caseX + action, caseY).spr.GetSubRect())
                 && _map->getTiles(caseX + action, caseY).type != SKY)*/
+        std::cout << _map->getTiles(caseX + action, caseY).type << std::endl;
+
         if (_map->getTiles(caseX + action, caseY).type != SKY)
-            // collision, on ne se déplace pas
         {
+            // collision, on ne se déplace pas
         }
 
         else
@@ -80,7 +85,7 @@ void Mario::evolue(WHAT action)
             this->Move(vx, 0);
         }
 
-        if (_status == ON_THE_GROUND && _map->getTiles(caseX, caseY + 1).type == SKY)
+        if (_status == ON_THE_GROUND && _map->getTiles(caseX + 1, caseY + 1).type == SKY)
             _status = FALL;
     }
 
@@ -93,8 +98,6 @@ void Mario::evolue(WHAT action)
     {
         this->fall();
     }
-
-
 }
 
 
