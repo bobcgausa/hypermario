@@ -1,4 +1,5 @@
 #include "Map.h"
+#include "Game.h"
 
 Map::Map()
 {
@@ -58,6 +59,28 @@ Map::Map()
             _tiles[i][j].spr.SetY(static_cast<float>(j * 32));
         }
     }
+
+    _scroll.Left = 0.f;
+    _scroll.Right = static_cast<float>(SCREEN_WIDHT);
+    _scroll.Top = 0.f;
+    _scroll.Bottom = static_cast<float>(SCREEN_HEIGHT);
+}
+
+void Map::refreshScrolling(const sf::Vector2f& pos)
+{
+    if (_scroll.Right < _tiles.size() * 32
+        && pos.x >= _scroll.Left + (_scroll.Right * 0.6))
+    {
+        ++_scroll.Left;
+        ++_scroll.Right;
+    }
+    else if (_scroll.Left > 0
+             && pos.x <= _scroll.Left + (_scroll.Right * 0.3))
+    {
+        --_scroll.Left;
+        --_scroll.Right;
+    }
+
 }
 
 void Map::drawMap(sf::RenderWindow& game)
@@ -69,6 +92,11 @@ void Map::drawMap(sf::RenderWindow& game)
             game.Draw(_tiles[i][j].spr);
         }
     }
+}
+
+sf::Rect<float> Map::getScrolling() const
+{
+    return _scroll;
 }
 
 s_Tiles& Map::getTiles(int x, int y)

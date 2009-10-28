@@ -22,9 +22,14 @@ public:
     void drawMap(sf::RenderWindow&);
     s_Tiles& getTiles(int, int);
 
+    void refreshScrolling(const sf::Vector2f& ) ;
+    sf::Rect<float> getScrolling(void) const;
+
 private:
     std::vector<std::vector<s_Tiles> > _tiles;
     std::vector<sf::Image> _img_tiles;
+
+     sf::Rect<float> _scroll;
 };
 
 #endif // MAP_H
