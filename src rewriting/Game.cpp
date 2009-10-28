@@ -3,7 +3,7 @@
 
 // Commentataion
 
-Game::Game() : sf::RenderWindow(sf::VideoMode(640, 480), "Hyper Mario")
+Game::Game() : sf::RenderWindow(sf::VideoMode(SCREEN_WIDHT, SCREEN_HEIGHT), "Hyper Mario")
 {
     _mario = new Mario(&_map);
 }
@@ -15,13 +15,21 @@ Game::~Game()
 
 void Game::drawAll(void)
 {
+    sf::View* view = new sf::View;
+    view->SetFromRect(_map.getScrolling());
+
+    this->SetView(*view);
+
     _map.drawMap(*this);
     Draw(*_mario);
+
+    delete view;
 }
 
 void Game::evolue(void)
 {
     _mario->evolue(_mario->status());
+    _map.refreshScrolling(_mario->GetPosition());
 }
 
 void Game::checkEvent(void)

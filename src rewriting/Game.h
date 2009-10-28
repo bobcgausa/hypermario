@@ -5,6 +5,9 @@
 
 const sf::Color mask(208, 214, 226);
 
+const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDHT = 640;
+
 #include "Map.h"
 #include "Mario.h"
 

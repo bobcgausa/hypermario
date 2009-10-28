@@ -1,6 +1,9 @@
 #include "Mario.h"
 #include <iostream>
 
+using std::cout;
+using std::endl;
+
 Mario::Mario(Map* map) : sf::Sprite()
 {
     _map = map;
@@ -11,7 +14,7 @@ Mario::Mario(Map* map) : sf::Sprite()
     SetImage(_img);
     Resize(32.0f, 32.0f);
     SetY(384.0f);
-    SetX(160.0f);
+    SetX(192.0f);
 
     _vyJ = -4;
     _vyF = 0;
@@ -23,10 +26,13 @@ void Mario::jump(void)
     int caseX = static_cast<int>(this->GetPosition().x / 32);
     int caseY = static_cast<int>(this->GetPosition().y / 32);
 
+    cout << caseX << " et " << caseY << endl;
+    cout << this->GetPosition().x << " et " << this->GetPosition().y << endl;
+
     // Si mario attend son point culminant de son saut, ou si on détecte une collision, alors il tombe
-    if (_vyJ >= 0 
+    if (_vyJ >= 0
         || _map->getTiles(caseX, caseY).type != SKY
-        || _map->getTiles(caseX + 1, caseY).type != SKY)
+        /*|| _map->getTiles(caseX + 1, caseY).type != SKY*/)
     {
         _status = FALL;
         _vyJ = -4;
@@ -35,7 +41,7 @@ void Mario::jump(void)
     }
 
     this->Move(0, _vyJ);
-    _vyJ += 0.1;
+    _vyJ += 0.08;
 }
 
 void Mario::fall(void)
@@ -54,7 +60,7 @@ void Mario::fall(void)
     }
 
     this->Move(0, _vyF);
-    _vyF += 0.1;
+    _vyF += 0.08;
 }
 
 WHAT& Mario::status()
@@ -73,10 +79,12 @@ void Mario::evolue(WHAT action)
 
         /*if (this->GetSubRect().Intersects(_map->getTiles(caseX + action, caseY).spr.GetSubRect())
                 && _map->getTiles(caseX + action, caseY).type != SKY)*/
-        std::cout << _map->getTiles(caseX + action, caseY).type << std::endl;
+
+        cout << caseX << endl;
 
         if (_map->getTiles(caseX + action, caseY).type != SKY)
         {
+            //this->SetPosition(caseX * 32 - action, caseY * 32);
             // collision, on ne se déplace pas
         }
 
