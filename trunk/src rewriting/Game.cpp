@@ -49,6 +49,9 @@ void Game::checkEvent(void)
     if (input.IsKeyDown(sf::Key::Left))
         _mario->evolue(LEFT);
 
+    if (input.IsKeyDown(sf::Key::A))
+        std::cout << static_cast<int>(_mario->GetPosition().x / 32) << " et " << static_cast<int>(_mario->GetPosition().y / 32) << std::endl;
+
     if (input.IsKeyDown(sf::Key::Up))
     {
         if (_mario->status() == ON_THE_GROUND)
