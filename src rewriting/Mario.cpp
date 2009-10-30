@@ -12,8 +12,8 @@ Mario::Mario(Map* map) : sf::Sprite()
     _img.CreateMaskFromColor(sf::Color(208, 214, 226));
 
     SetImage(_img);
-    Resize(32.0f, 32.0f);
-    SetY(384.0f);
+    Resize(24.0f, 24.0f);
+    SetY(392.0f);
     SetX(192.0f);
 
     _vyJ = -4;
@@ -26,8 +26,6 @@ void Mario::jump(void)
     int caseX = static_cast<int>(this->GetPosition().x / 32);
     int caseY = static_cast<int>(this->GetPosition().y / 32);
 
-    cout << caseX << " et " << caseY << endl;
-    cout << this->GetPosition().x << " et " << this->GetPosition().y << endl;
 
     // Si mario attend son point culminant de son saut, ou si on détecte une collision, alors il tombe
     if (_vyJ >= 0
@@ -41,17 +39,16 @@ void Mario::jump(void)
     }
 
     this->Move(0, _vyJ);
-    _vyJ += 0.08;
+    _vyJ += 0.1;
 }
 
 void Mario::fall(void)
 {
     int caseX = static_cast<int>(this->GetPosition().x / 32);
-    int caseY = static_cast<int>(this->GetPosition().y / 32);
+    int caseY = static_cast<int>((this->GetPosition().y + 25) / 32);
 
-    //if (this->GetSubRect().Intersects(_map->getTiles(caseX, caseY + 1).spr.GetSubRect()))
-    if (_map->getTiles(caseX, caseY + 1).type != SKY
-        || _map->getTiles(caseX + 1, caseY + 1).type != SKY)
+    if (_map->getTiles(caseX, caseY).type != SKY
+        /*|| _map->getTiles(caseX, caseY).type != SKY*/)
     {
         _status = ON_THE_GROUND;
         _vyF = 0;
@@ -60,7 +57,7 @@ void Mario::fall(void)
     }
 
     this->Move(0, _vyF);
-    _vyF += 0.08;
+    _vyF += 0.1;
 }
 
 WHAT& Mario::status()
@@ -72,28 +69,20 @@ void Mario::evolue(WHAT action)
 {
     if (action == RIGHT || action == LEFT)
     {
-        int caseX = static_cast<int>(this->GetPosition().x / 32);
-        int caseY = static_cast<int>(this->GetPosition().y / 32);
-
         int vx = action == RIGHT ? 1 : -1;
 
-        /*if (this->GetSubRect().Intersects(_map->getTiles(caseX + action, caseY).spr.GetSubRect())
-                && _map->getTiles(caseX + action, caseY).type != SKY)*/
+        int caseX = static_cast<int>((this->GetPosition().x + (action == RIGHT ? 25 : -1)) / 32);
+        int caseY = static_cast<int>(this->GetPosition().y / 32);
 
-        cout << caseX << endl;
-
-        if (_map->getTiles(caseX + action, caseY).type != SKY)
+        if (_map->getTiles(caseX, caseY).type != SKY)
         {
-            //this->SetPosition(caseX * 32 - action, caseY * 32);
-            // collision, on ne se déplace pas
         }
-
         else
         {
             this->Move(vx, 0);
         }
 
-        if (_status == ON_THE_GROUND && _map->getTiles(caseX + 1, caseY + 1).type == SKY)
+        if (_status == ON_THE_GROUND && _map->getTiles(caseX, caseY + 1).type == SKY)
             _status = FALL;
     }
 
