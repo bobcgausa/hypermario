@@ -25,12 +25,12 @@ void Mario::jump(void)
 {
     int caseX = static_cast<int>(this->GetPosition().x / 32);
     int caseY = static_cast<int>(this->GetPosition().y / 32);
-
+    int caseX2 = static_cast<int>((this->GetPosition().x + 23) / 32);
 
     // Si mario attend son point culminant de son saut, ou si on détecte une collision, alors il tombe
     if (_vyJ >= 0
         || _map->getTiles(caseX, caseY).type != SKY
-        /*|| _map->getTiles(caseX + 1, caseY).type != SKY*/)
+        || _map->getTiles(caseX2, caseY).type != SKY)
     {
         _status = FALL;
         _vyJ = -4;
@@ -46,10 +46,12 @@ void Mario::fall(void)
 {
     int caseX = static_cast<int>(this->GetPosition().x / 32);
     int caseY = static_cast<int>((this->GetPosition().y + 25) / 32);
+    int caseX2 = static_cast<int>((this->GetPosition().x + 23) / 32);
 
     if (_map->getTiles(caseX, caseY).type != SKY
-        /*|| _map->getTiles(caseX, caseY).type != SKY*/)
+        || _map->getTiles(caseX2, caseY).type != SKY)
     {
+        this->SetY(static_cast<int>(this->GetPosition().y));
         _status = ON_THE_GROUND;
         _vyF = 0;
 
@@ -73,8 +75,10 @@ void Mario::evolue(WHAT action)
 
         int caseX = static_cast<int>((this->GetPosition().x + (action == RIGHT ? 25 : -1)) / 32);
         int caseY = static_cast<int>(this->GetPosition().y / 32);
+        int caseY2 = static_cast<int>((this->GetPosition().y + 22) / 32);
 
-        if (_map->getTiles(caseX, caseY).type != SKY)
+        if (_map->getTiles(caseX, caseY).type != SKY
+            || _map->getTiles(caseX, caseY2).type != SKY)
         {
         }
         else
