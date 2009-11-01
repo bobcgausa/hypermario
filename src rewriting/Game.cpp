@@ -1,7 +1,8 @@
 #include "Game.h"
 #include <iostream>
 
-// Commentataion
+using std::cout;
+using std::endl;
 
 Game::Game() : sf::RenderWindow(sf::VideoMode(SCREEN_WIDHT, SCREEN_HEIGHT), "Hyper Mario")
 {
@@ -51,7 +52,8 @@ void Game::checkEvent(void)
 
     if (input.IsKeyDown(sf::Key::A))
         std::cout << static_cast<int>(_mario->GetPosition().x / 32) << " et " << static_cast<int>(_mario->GetPosition().y / 32) << std::endl;
-
+    if (input.IsKeyDown(sf::Key::B))
+        cout << _mario->GetPosition().x << " et " << _mario->GetPosition().y << endl;
     if (input.IsKeyDown(sf::Key::Up))
     {
         if (_mario->status() == ON_THE_GROUND)
