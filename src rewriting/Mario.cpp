@@ -45,8 +45,10 @@ void Mario::jump(void)
 void Mario::fall(void)
 {
     int caseX = static_cast<int>(this->GetPosition().x / 32);
-    int caseY = static_cast<int>((this->GetPosition().y + 25) / 32);
+    int caseY = static_cast<int>((this->GetPosition().y + 24 + _vyF) / 32);
     int caseX2 = static_cast<int>((this->GetPosition().x + 23) / 32);
+
+    cout << this->GetPosition().y << endl;
 
     if (_map->getTiles(caseX, caseY).type != SKY
         || _map->getTiles(caseX2, caseY).type != SKY)
@@ -55,11 +57,14 @@ void Mario::fall(void)
         _status = ON_THE_GROUND;
         _vyF = 0;
 
+        cout << "FINISH : " << this->GetPosition().y << endl;
+
         return;
     }
 
     this->Move(0, _vyF);
-    _vyF += 0.1;
+    if (_vyF < 5)
+        _vyF += 0.1;
 }
 
 WHAT& Mario::status()
@@ -71,7 +76,7 @@ void Mario::evolue(WHAT action)
 {
     if (action == RIGHT || action == LEFT)
     {
-        int vx = action == RIGHT ? 1 : -1;
+        int vx = action == RIGHT ? 2 : -2;
 
         int caseX = static_cast<int>((this->GetPosition().x + (action == RIGHT ? 25 : -1)) / 32);
         int caseY = static_cast<int>(this->GetPosition().y / 32);
