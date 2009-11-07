@@ -48,16 +48,17 @@ void Mario::fall(void)
     int caseY = static_cast<int>((this->GetPosition().y + 24 + _vyF) / 32);
     int caseX2 = static_cast<int>((this->GetPosition().x + 23) / 32);
 
-    cout << this->GetPosition().y << endl;
-
     if (_map->getTiles(caseX, caseY).type != SKY
-        || _map->getTiles(caseX2, caseY).type != SKY)
+        || _map->getTiles(caseX2, caseY).type != SKY )
     {
-        this->SetY(static_cast<int>(this->GetPosition().y));
+        int y = this->GetPosition().y;
+
+        while ((y + 24) % 32 != 0)
+            ++y;
+        this->SetY(y);
+
         _status = ON_THE_GROUND;
         _vyF = 0;
-
-        cout << "FINISH : " << this->GetPosition().y << endl;
 
         return;
     }
