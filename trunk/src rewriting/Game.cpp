@@ -44,6 +44,10 @@ void Game::checkEvent(void)
         this->Close();
 
     // direction control
+    if (input.IsKeyDown(sf::Key::Up))
+        if (_mario->status() == ON_THE_GROUND)
+            _mario->status() = JUMP;
+
     if (input.IsKeyDown(sf::Key::Right))
         _mario->evolue(RIGHT);
 
@@ -51,12 +55,6 @@ void Game::checkEvent(void)
         _mario->evolue(LEFT);
 
     if (input.IsKeyDown(sf::Key::A))
-        std::cout << static_cast<int>(_mario->GetPosition().x / 32) << " et " << static_cast<int>(_mario->GetPosition().y / 32) << std::endl;
-    if (input.IsKeyDown(sf::Key::B))
-        cout << _mario->GetPosition().x << " et " << _mario->GetPosition().y << endl;
-    if (input.IsKeyDown(sf::Key::Up))
-    {
-        if (_mario->status() == ON_THE_GROUND)
-            _mario->status() = JUMP;
-    }
+        getchar();
+    //if (input.IsKeyDown(sf::Key::B))
 }
