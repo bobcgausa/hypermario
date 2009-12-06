@@ -55,6 +55,9 @@ void Game::checkEvent(void)
         _mario->evolue(LEFT);
 
     if (input.IsKeyDown(sf::Key::A))
-        getchar();
+        this->SetFramerateLimit(10);
+    if (input.IsKeyDown(sf::Key::B))
+        this->SetFramerateLimit(60);
+
     //if (input.IsKeyDown(sf::Key::B))
 }

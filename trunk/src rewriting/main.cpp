@@ -13,7 +13,7 @@ int main(void)
 
         game.evolue();
 
-        game.Clear();
+        game.Clear(sf::Color::Blue);
 
         game.drawAll();
 
