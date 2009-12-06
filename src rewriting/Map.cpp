@@ -1,6 +1,11 @@
 #include "Map.h"
 #include "Game.h"
 
+#include <iostream>
+
+using std::cout;
+using std::endl;
+
 Map::Map()
 {
     sf::Image map, tiles;
@@ -62,24 +67,26 @@ Map::Map()
 
     _scroll.Left = 0.f;
     _scroll.Right = static_cast<float>(SCREEN_WIDHT);
-    _scroll.Top = 0.f;
-    _scroll.Bottom = static_cast<float>(SCREEN_HEIGHT);
+    _scroll.Top = _tiles[0].size() * 32 - static_cast<float>(SCREEN_HEIGHT);
+    _scroll.Bottom = _tiles[0].size() * 32;
 }
 
 void Map::refreshScrolling(const sf::Vector2f& pos)
 {
     if (_scroll.Right < _tiles.size() * 32
-        && pos.x >= _scroll.Left + (_scroll.Right * 0.6))
+        && pos.x >= _scroll.Left + (_scroll.Right * 0.3))
     {
         ++_scroll.Left;
         ++_scroll.Right;
     }
     else if (_scroll.Left > 0
-             && pos.x <= _scroll.Left + (_scroll.Right * 0.3))
+            && pos.x <= _scroll.Left + (_scroll.Right * 0.3))
     {
         --_scroll.Left;
         --_scroll.Right;
     }
+
+    /** Implémenter la même chose avec les ordonnées **/
 
 }
 

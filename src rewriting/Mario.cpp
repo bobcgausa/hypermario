@@ -13,11 +13,11 @@ Mario::Mario(Map* map) : sf::Sprite()
 
     SetImage(_img);
     Resize(24.0f, 24.0f);
-    SetY(392.0f);
-    SetX(192.0f);
+    SetY(488.0f);
+    SetX(22.0f);
 
     _vyJ = -4;
-    _vyF = 0;
+    _vyF = 0.1;
     _status = ON_THE_GROUND;
 }
 
@@ -45,13 +45,17 @@ void Mario::jump(void)
 void Mario::fall(void)
 {
     int caseX = static_cast<int>(this->GetPosition().x / 32);
+    int caseX2 = static_cast<int>((this->GetPosition().x + 24) / 32);
     int caseY = static_cast<int>((this->GetPosition().y + 24 + _vyF) / 32);
-    int caseX2 = static_cast<int>((this->GetPosition().x + 23) / 32);
+
+    puts("JE PASSE !");
 
     if (_map->getTiles(caseX, caseY).type != SKY
-        || _map->getTiles(caseX2, caseY).type != SKY )
+        || _map->getTiles(caseX2, caseY).type != SKY)
     {
-        int y = this->GetPosition().y;
+        cout << caseX2 << " et " << caseY << " et " << _map->getTiles(caseX2, caseY).type << endl;
+        cout << this->GetPosition().x << " et " << this->GetPosition().x + 23 << endl;
+        int y = static_cast<int>(this->GetPosition().y);
 
         while ((y + 24) % 32 != 0)
             ++y;
@@ -64,6 +68,7 @@ void Mario::fall(void)
     }
 
     this->Move(0, _vyF);
+
     if (_vyF < 5)
         _vyF += 0.1;
 }
@@ -91,6 +96,8 @@ void Mario::evolue(WHAT action)
         {
             this->Move(vx, 0);
         }
+
+        caseX = static_cast<int>(this->GetPosition().x / 32);
 
         if (_status == ON_THE_GROUND && _map->getTiles(caseX, caseY + 1).type == SKY)
             _status = FALL;
