@@ -1,107 +1,111 @@
 #include "Mario.h"
-#include "Game.h"
+#include <iostream>
 
-#include <stdexcept>
+using std::cout;
+using std::endl;
 
-Mario::Mario()
+Mario::Mario(Map* map) : sf::Sprite()
 {
-    img_ = NULL;
-    try
+    _map = map;
+
+    _img.LoadFromFile("media/mario.bmp");
+    _img.CreateMaskFromColor(sf::Color(208, 214, 226));
+
+    SetImage(_img);
+    Resize(24.0f, 24.0f);
+    SetY(264.0f);
+    SetX(22.0f);
+
+    _vyJ = -4;
+    _vyF = 0.1;
+    _status = ON_THE_GROUND;
+}
+
+void Mario::jump(void)
+{
+    int caseX = static_cast<int>(this->GetPosition().x / 32);
+    int caseY = static_cast<int>(this->GetPosition().y / 32);
+    int caseX2 = static_cast<int>((this->GetPosition().x + 23) / 32);
+
+    // Si mario attend son point culminant de son saut, ou si on détecte une collision, alors il tombe
+    if (_vyJ >= 0
+        || _map->getTiles(caseX, caseY).type != SKY
+        || _map->getTiles(caseX2, caseY).type != SKY)
     {
-        img_ = new sf::Image;
-        if (!img_->LoadFromFile("media/mario.bmp"))
-            throw std::runtime_error("File can't be open");
+        _status = FALL;
+        _vyJ = -4;
+
+        return;
     }
-    catch (const std::runtime_error& e)
+
+    this->Move(0, _vyJ);
+    _vyJ += 0.1;
+}
+
+void Mario::fall(void)
+{
+    int caseX = static_cast<int>(this->GetPosition().x / 32);
+    int caseX2 = static_cast<int>((this->GetPosition().x + 23) / 32);
+    int caseY = static_cast<int>((this->GetPosition().y + 24 + _vyF) / 32);
+
+    if (_map->getTiles(caseX, caseY).type != SKY
+        || _map->getTiles(caseX2, caseY).type != SKY)
     {
-        throw;
+        int y = static_cast<int>(this->GetPosition().y);
+
+        while ((y + 24) % 32 != 0)
+            ++y;
+        this->SetY(y);
+
+        _status = ON_THE_GROUND;
+        _vyF = 0;
+
+        return;
     }
-    img_->CreateMaskFromColor(mask);
 
-    pos_.x = 160;
-    pos_.y = 384;
+    this->Move(0, _vyF);
 
-    status_ = ON_THE_GROUND;
-    v_y = -4;
+    if (_vyF < 5)
+        _vyF += 0.1;
 }
 
-Mario::~Mario()
+WHAT& Mario::status()
 {
-    delete img_;
+    return _status;
 }
 
-void Mario::operator++()
+void Mario::evolue(WHAT action)
 {
-    pos_.x++;
-}
-
-void Mario::operator--()
-{
-    pos_.x--;
-}
-
-float& Mario::x()
-{
-    return pos_.x;
-}
-
-float& Mario::y()
-{
-    return pos_.y;
-}
-
-void Mario::doJump()
-{
-    if (c_.GetElapsedTime() > 0.005)
+    if (action == RIGHT || action == LEFT)
     {
-        pos_.y += v_y;
-        if (v_y >= 0)
-            status_ = FALL;
+        int vx = action == RIGHT ? 2 : -2;
 
-        v_y += 0.1;
+        int caseX = static_cast<int>((this->GetPosition().x + (action == RIGHT ? 24 : -1)) / 32);
+        int caseY = static_cast<int>(this->GetPosition().y / 32);
+        int caseY2 = static_cast<int>((this->GetPosition().y + 23) / 32);
 
-        c_.Reset();
+        if (_map->getTiles(caseX, caseY).type == SKY
+            && _map->getTiles(caseX, caseY2).type == SKY)
+        {
+            this->Move(vx, 0);
+        }
+
+        caseX = static_cast<int>(this->GetPosition().x / 32);
+
+        if (_status == ON_THE_GROUND && _map->getTiles(caseX, caseY + 1).type == SKY)
+            _status = FALL;
+    }
+
+    if (action == JUMP)
+    {
+        this->jump();
+    }
+
+    if (action == FALL)
+    {
+        this->fall();
     }
 }
 
-int Mario::status() const
-{
-    return status_;
-}
-
-void Mario::jump()
-{
-    status_ = JUMP;
-}
-
-void Mario::isOnTheGround()
-{
-    v_y = -4;
-    status_ = ON_THE_GROUND;
-}
-
-void Mario::isFalling()
-{
-    status_ = FALL;
-    v_y = 0;
-}
-
-void Mario::onDraw(sf::RenderWindow& App)
-{
-    sf::Sprite* s = new sf::Sprite;
-
-    s->SetImage(*img_);
-    s->SetPosition(pos_);
-    s->Resize(32, 32);
-
-    App.Draw(*s);
-
-    delete s;
-}
-
-sf::Vector2f Mario::pos() const
-{
-    return pos_;
-}
 
 

@@ -1,33 +1,35 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include <SFML/Graphics.hpp>
 #include <vector>
-#include <SFML\Graphics.hpp>
 
-typedef unsigned int Uint;
-const int SKY = 33;
+enum TYPE
+{
+    BOX, GROUND, WALL, TUBE_HEADER1, TUBE_HEADER2, TUBE_BOTTOM1, TUBE_BOTTOM2, SKY
+};
+
+struct s_Tiles
+{
+    sf::Sprite spr;
+    TYPE type;
+};
 
 class Map
 {
-    public:
-        Map();
-        Map(const sf::Image& ) ;
-        void createFrom(const sf::Image& ) ;
-        void onDraw(sf::RenderWindow&, std::vector<sf::Image>& ) ;
+public:
+    Map();
+    void drawMap(sf::RenderWindow&);
+    s_Tiles& getTiles(int, int);
 
-        bool detectCollision(const sf::Vector2f& , int = -1) ;
+    void refreshScrolling(const sf::Vector2f& ) ;
+    sf::Rect<float> getScrolling(void) const;
 
-        int height() const;
-        int width() const;
+private:
+    std::vector<std::vector<s_Tiles> > _tiles;
+    std::vector<sf::Image> _img_tiles;
 
-        int& operator()(int, int ) ;
-
-        ~Map();
-
-    private:
-        int** map_;
-        int height_; int width_;
-
+     sf::Rect<float> _scroll;
 };
 
 #endif // MAP_H

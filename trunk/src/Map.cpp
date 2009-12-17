@@ -1,98 +1,113 @@
 #include "Map.h"
+#include "Game.h"
+
+#include <iostream>
+
+using std::cout;
+using std::endl;
 
 Map::Map()
 {
+    sf::Image map, tiles;
 
-}
+    map.LoadFromFile("media/map.bmp");
+    _tiles.resize(map.GetWidth(), std::vector<s_Tiles>(map.GetHeight()));
 
-Map::Map(const sf::Image& Map)
-{
-    createFrom(Map);
-}
+    tiles.LoadFromFile("media/tiles.bmp");
+    _img_tiles.resize(tiles.GetWidth() / 32 + 1);
 
-void Map::createFrom(const sf::Image& Map)
-{
-    std::vector<sf::Color> colorToTile;
-    colorToTile.resize(7);
-    colorToTile[0] = sf::Color(255, 0, 0);
-    colorToTile[1] = sf::Color(255, 102, 0);
-    colorToTile[2] = sf::Color(255, 0, 255);
-    colorToTile[3] = sf::Color(34, 255, 29);
-    colorToTile[4] = sf::Color(155, 255, 54);
-    colorToTile[5] = sf::Color(34, 231, 29);
-    colorToTile[6] = sf::Color(155, 231, 54);
-    // Partie du dessus à changer
+    const sf::Color mask(208, 214, 226);
 
-    width_ = Map.GetWidth(), height_ = Map.GetHeight();
-
-    map_ = new int*[width_]; // Tableau de int 2D faisant la taille de la map
-    for (int i = 0; i < width_; ++i)
-        map_[i] = new int[height_];
-
-    for (int i = 0; i < width_; ++i)
+    for (unsigned int i = 0; i < (_img_tiles.size() - 1); ++i)
     {
-        for (int j = 0; j < height_; ++j)
-        {
-            sf::Color toGet = Map.GetPixel(i, j); // Recuperation des pixels de la map
+        _img_tiles[i].Create(32, 32);
+        _img_tiles[i].Copy(tiles, 0, 0, sf::IntRect(i * 32, 0, (i + 1) * 32, 32));
+        _img_tiles[i].CreateMaskFromColor(mask);
+    }
 
-            if (toGet == sf::Color::Blue)
-            {
-                map_[i][j] = SKY;
-            }
-            else
-            {
-                for (Uint k = 0; k < colorToTile.size(); ++k)
-                {
-                    if (colorToTile[k] == toGet)
-                    {
-                        map_[i][j] = k;
-                        break;
-                    }
-                }
-            }
+    _img_tiles[_img_tiles.size() - 1].Create(32, 32, sf::Color(0, 0, 255));
+
+    for (unsigned int i = 0; i < map.GetWidth(); ++i)
+    {
+        for (unsigned int j = 0; j < map.GetHeight(); ++j)
+        {
+            TYPE type;
+
+            if (map.GetPixel(i, j) == sf::Color::Blue)
+                type = SKY;
+
+            else if (map.GetPixel(i, j) == sf::Color::Red)
+                type = BOX;
+
+            else if (map.GetPixel(i, j) == sf::Color::Magenta)
+                type = WALL;
+
+            else if (map.GetPixel(i, j) == sf::Color::Color(255, 102, 0))
+                type = GROUND;
+
+            else if (map.GetPixel(i, j) == sf::Color::Color(34, 255, 29))
+                type = TUBE_HEADER1;
+
+            else if (map.GetPixel(i, j) == sf::Color::Color(155, 255, 54))
+                type = TUBE_HEADER2;
+
+            else if (map.GetPixel(i, j) == sf::Color::Color(34, 231, 29))
+                type = TUBE_BOTTOM1;
+
+            else if (map.GetPixel(i, j) == sf::Color::Color(155, 231, 54))
+                type = TUBE_BOTTOM2;
+
+            _tiles[i][j].type = type;
+            _tiles[i][j].spr.SetImage(_img_tiles[type]);
+
+            _tiles[i][j].spr.SetX(static_cast<float>(i * 32));
+            _tiles[i][j].spr.SetY(static_cast<float>(j * 32));
+        }
+    }
+
+    _scroll.Left = 0.f;
+    _scroll.Right = static_cast<float>(SCREEN_WIDHT);
+    _scroll.Top = _tiles[0].size() * 32 - static_cast<float>(SCREEN_HEIGHT);
+    _scroll.Bottom = _tiles[0].size() * 32;
+}
+
+void Map::refreshScrolling(const sf::Vector2f& pos)
+{
+    if (_scroll.Right < _tiles.size() * 32
+        && pos.x >= _scroll.Left + (_scroll.Right * 0.3))
+    {
+        ++_scroll.Left;
+        ++_scroll.Right;
+    }
+    else if (_scroll.Left > 0
+            && pos.x <= _scroll.Left + (_scroll.Right * 0.3))
+    {
+        --_scroll.Left;
+        --_scroll.Right;
+    }
+
+    /** Implémenter la même chose avec les ordonnées **/
+
+}
+
+void Map::drawMap(sf::RenderWindow& game)
+{
+    for (unsigned int i = 0; i < _tiles.size(); ++i)
+    {
+        for (unsigned int j = 0; j < _tiles[i].size(); ++j)
+        {
+            game.Draw(_tiles[i][j].spr);
         }
     }
 }
 
-void Map::onDraw(sf::RenderWindow& App, std::vector<sf::Image>& tiles)
+sf::Rect<float> Map::getScrolling() const
 {
-    for (int i = 0; i < width_; ++i)
-    {
-        for (int j = 0; j < height_; ++j)
-        {
-            if (map_[i][j] != SKY)
-            {
-                sf::Sprite* s = new sf::Sprite;
-
-                s->SetImage( tiles[ map_[i][j] ] ); // On recupere le tile qui correspond
-                s->SetPosition(i * 32, j * 32);
-
-                App.Draw(*s);
-
-                delete s;
-            }
-        }
-    }
+    return _scroll;
 }
 
-int& Map::operator()(int n, int n2)
+s_Tiles& Map::getTiles(int x, int y)
 {
-    return map_[n][n2];
+    return _tiles[x][y];
 }
 
-int Map::width() const
-{
-    return width_;
-}
-
-int Map::height() const
-{
-    return height_;
-}
-
-Map::~Map()
-{
-    for (int i = 0; i < width_; i++)
-        delete map_[i];
-    delete[] map_;
-}

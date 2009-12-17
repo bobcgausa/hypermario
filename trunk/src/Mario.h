@@ -2,46 +2,32 @@
 #define MARIO_H
 
 #include <SFML/Graphics.hpp>
+#include "Map.h"
 
-enum { JUMP, FALL, ON_THE_GROUND} ;
-
-class Mario
+enum WHAT
 {
-    public:
-        Mario();
+    LEFT, RIGHT, JUMP, FALL, ON_THE_GROUND
+};
 
-        void onDraw(sf::RenderWindow& ) ;
+class Mario : public sf::Sprite
+{
+public:
+    Mario(Map*);
 
-        void operator++() ; // Incrémente la position x
-        void operator--() ; // Décrémente " "
+    void evolue(WHAT action = ON_THE_GROUND);
 
-        float& y() ;
-        float& x() ;
+    WHAT& status() ;
 
-        sf::Vector2f pos() const;
+private:
+    void jump(void);
+    void fall(void);
 
-        void jump( );
-        void doJump() ;
+    Map* _map;
+    sf::Image _img;
 
-        void isOnTheGround() ;
-        void isFalling() ;
-
-        int status() const;
-
-        ~Mario();
-
-
-    private:
-        sf::Image* img_;
-        sf::Vector2f pos_;
-
-        int status_;
-
-        double v_y;
-
-        sf::Clock c_;
-} ;
-
-
+    double _vyJ;
+    double _vyF;
+    WHAT _status;
+};
 
 #endif // MARIO_H
