@@ -1,43 +1,32 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <SFML\Graphics.hpp>
-
-enum { LEFT, RIGHT, UP, DOWN} ;
-
-const int SIZE_BLOC = 32;
-const int SCREEN_WIDHT = 640;
-const int SCREEN_HEIGHT = 480;
+#include <SFML/Graphics.hpp>
 
 const sf::Color mask(208, 214, 226);
+
+const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDHT = 640;
 
 #include "Map.h"
 #include "Mario.h"
 
-
 class Game : public sf::RenderWindow
 {
-    public:
-        Game();
-        virtual ~Game();
+public:
+    Game();
 
-        void loadMap(const sf::Image& ) ;
-        void createTiles() ;
-        void drawAll() ;
+    virtual ~Game();
 
-        void onEvent() ;
+    void drawAll(void);
 
+    void checkEvent(void);
 
+    void evolue(void);
 
-    private:
-        void drawMario() ;
-        void drawMap() ;
-
-        Map map_;
-        std::vector<sf::Image> tiles_;
-        Mario* mario_;
-        sf::Clock clock_;
-        double lastTime;
+private:
+    Map _map;
+    Mario* _mario;
 };
 
 #endif // GAME_H

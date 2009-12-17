@@ -1,37 +1,23 @@
 #include <SFML/Graphics.hpp>
-
 #include "Game.h"
 
-int main()
+int main(void)
 {
-    sf::Image I;
-    if (!I.LoadFromFile("media/map.bmp"))
-        return -1;
+    Game game;
 
-    Game* G = NULL;
-    try
+    game.UseVerticalSync(true);
+
+    while (game.IsOpened())
     {
-        G = new Game;
-    }
-    catch (const std::exception& e)
-    {
-        delete G;
-        return EXIT_FAILURE;
-    }
+        game.checkEvent();
 
-    G->loadMap(I);
+        game.evolue();
 
-    while (G->IsOpened())
-    {
-        G->onEvent();
+        game.Clear();
 
-        // Le bleu correspond au "ciel" du fond
-        /** A modifier lorsque le fond et le scrolling sera mis en place **/
-        G->Clear(sf::Color::Blue);
+        game.drawAll();
 
-        G->drawAll();
-
-        G->Display();
+        game.Display();
 
         sf::Sleep(0.001);
     }

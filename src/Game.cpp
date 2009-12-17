@@ -1,167 +1,69 @@
 #include "Game.h"
-
-#include <stdexcept>
 #include <iostream>
 
-Game::Game() : sf::RenderWindow(sf::VideoMode(SCREEN_WIDHT, SCREEN_HEIGHT), "Mario")
-{
-    mario_ = NULL;
-    try
-    {
-        mario_ = new Mario;
-        createTiles();
-    }
-    catch (const std::runtime_error& e)
-    {
-        delete mario_;
+using std::cout;
+using std::endl;
 
-        std::cerr << e.what() << std::endl;
-        throw;
-    }
+Game::Game() : sf::RenderWindow(sf::VideoMode(SCREEN_WIDHT, SCREEN_HEIGHT), "Hyper Mario")
+{
+    _mario = new Mario(&_map);
 }
 
 Game::~Game()
 {
-    delete mario_;
+    delete _mario;
 }
 
-void Game::loadMap(const sf::Image& map)
+void Game::drawAll(void)
 {
-    map_.createFrom(map);
+    sf::View* view = new sf::View;
+    view->SetFromRect(_map.getScrolling());
+
+    this->SetView(*view);
+
+    _map.drawMap(*this);
+    Draw(*_mario);
+
+    delete view;
 }
 
-void Game::drawMap()
+void Game::evolue(void)
 {
-    map_.onDraw(*this, tiles_) ;
+    _mario->evolue(_mario->status());
+    _map.refreshScrolling(_mario->GetPosition());
 }
 
-void Game::drawMario()
+void Game::checkEvent(void)
 {
-    mario_->onDraw(*this);
-}
+    const sf::Input& input = this->GetInput();
+    sf::Event Event;
+    this->GetEvent(Event);
 
-void Game::drawAll()
-{
-    drawMap();
-    drawMario();
-}
+    // close window
+    if (Event.Type == sf::Event::Closed)
+        this->Close();
 
-void Game::onEvent()
-{
-    sf::Event E;
-    const sf::Input& I = GetInput();
+    // direction control
+    if (input.IsKeyDown(sf::Key::Up))
+        if (_mario->status() == ON_THE_GROUND)
+            _mario->status() = JUMP;
 
-    lastTime = clock_.GetElapsedTime();
-    const sf::Vector2f marioPos = mario_->pos() ;
+    if (input.IsKeyDown(sf::Key::Right))
+        _mario->evolue(RIGHT);
 
-    if (GetEvent(E))
-    {
-        if (E.Type == sf::Event::Closed)
-            Close();
-    }
+    if (input.IsKeyDown(sf::Key::Left))
+        _mario->evolue(LEFT);
 
-    if (I.IsKeyDown(sf::Key::Right))
-    {
-        if (lastTime > 0.005 && !map_.detectCollision(marioPos, RIGHT))
-        {
-            mario_->x()++;
-            clock_.Reset();
-        }
-    }
-    else if (I.IsKeyDown(sf::Key::Left))
-    {
-        if (lastTime > 0.005 && !map_.detectCollision(marioPos, LEFT))
-        {
-            mario_->x()--;
-            clock_.Reset();
-        }
-    }
-    if (I.IsKeyDown(sf::Key::Up))
-    {
-        if (lastTime > 0.005 && !map_.detectCollision(marioPos, UP))
-        {
-            mario_->jump();
-            clock_.Reset();
-        }
-    }
-    else if (I.IsKeyDown(sf::Key::Down))
-    {
-        /*if (lastTime > 0.005 && !map_.detectCollision(marioPos, DOWN))
-        {
-            clock_.Reset();
-            mario_->y()++;
-        }*/
-    }
+    if (input.IsKeyDown(sf::Key::A))
+        this->SetFramerateLimit(10);
+    if (input.IsKeyDown(sf::Key::B))
+        this->SetFramerateLimit(60);
 
-    // Si Mario saute et que la case du dessus n'est pas le ciel
-    if (mario_->status() == JUMP)
-    {
-        if (!map_.detectCollision(marioPos, UP))
-            mario_->doJump();
-        else
-            mario_->isFalling();
+   /* if (input.IsMouseButtonDown(sf::Mouse::Left))
+        std::cout << std::endl << static_cast<int>(_mario->GetPosition().x / 32) << " et "
+        << static_cast<int>(_mario->GetPosition().y / 32);*/
 
-    }
-    else if (mario_->status() == FALL)
-    {
-        if (!map_.detectCollision(marioPos, DOWN)) mario_->doJump();
-        else
-            mario_->isOnTheGround();
-    }
-
-    if (I.IsMouseButtonDown(sf::Mouse::Right))
-    {
-        system("cls");
-        std::cout << mario_->x() / 32 << " et " << mario_->y() / 32 << std::endl;
-    }
-}
-
-/** Toute la fonction est à corriger (remplacer les casts et modifier les conditions) **/
-
-bool Map::detectCollision(const sf::Vector2f& pos, int direction)
-{
-    sf::Vector2i marioCase;
-    marioCase.x = static_cast<int>(pos.x / 32), marioCase.y = static_cast<int>(pos.y / 32);
-
-    if (direction == UP || direction == DOWN)
-    {
-        if (map_[marioCase.x][marioCase.y + (direction == UP ? -1 : 1)] != SKY)
-            return true;
-        /*else if (map_[marioCase.x / 32)][marioCase.y / 32) + (direction == UP ? -1 : 1)] == SKY &&
-                 map_[static_cast<int>((pos.x + 30) / 32)][marioCase.y / 32) + (direction == UP ? -1 : 1)] != SKY)
-            return true;*/
-    }
-    else if (direction == RIGHT || direction == LEFT)
-    {
-        if (map_[marioCase.x + (direction == RIGHT ? 1 : 0)][marioCase.y] != SKY)
-            return true;
-        /*else if (map_[marioCase.x / 32) + (direction == RIGHT ? 1 : -1)][marioCase.y / 32)] == SKY &&
-                 map_[marioCase.x / 32) + (direction == RIGHT ? 1 : -1)]
-                 [marioCase.y / 32) + (direction == RIGHT ? 1 : -1)] != SKY)
-            return true;*/
-    }
-    return false;
-}
-
-void Game::createTiles()
-{
-    sf::Image allTiles;
-    try
-    {
-        if (!allTiles.LoadFromFile("media/tiles.bmp"))
-            throw std::runtime_error("File can't be open");
-    }
-    catch (const std::exception& e)
-    {
-        throw;
-    }
-
-    tiles_.resize(7);
-
-    for (Uint i = 0; i < tiles_.size(); i++)
-    {
-        tiles_[i].Create(32, 32);
-        tiles_[i].Copy(allTiles, 0, 0, sf::IntRect(i * 32, 0, (i + 1) * 32, 32));
-        tiles_[i].CreateMaskFromColor(mask);
-    }
+    cout << _mario->GetPosition().x << " et " << _mario->GetPosition().x + 24 << endl;
+    system("cls");
+    //if (input.IsKeyDown(sf::Key::B))
 }
