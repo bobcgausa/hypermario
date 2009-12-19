@@ -16,8 +16,6 @@ Map::Map()
     tiles.LoadFromFile("media/tiles.bmp");
     _img_tiles.resize(tiles.GetWidth() / 32 + 1);
 
-    const sf::Color mask(208, 214, 226);
-
     for (unsigned int i = 0; i < (_img_tiles.size() - 1); ++i)
     {
         _img_tiles[i].Create(32, 32);
@@ -73,18 +71,19 @@ Map::Map()
 
 void Map::refreshScrolling(const sf::Vector2f& pos)
 {
-    if (_scroll.Right < _tiles.size() * 32
-        && pos.x >= _scroll.Left + (_scroll.Right * 0.3))
+        // Check if Mario isn't at the right edge
+    if ((_scroll.Right < _tiles.size() * 32
+        && pos.x >= _scroll.Left + static_cast<int>(SCREEN_WIDHT * 0.5))
+
+        // Or check if Mario isn't at the left edge
+        || (_scroll.Left > 0
+        && pos.x <= _scroll.Left + static_cast<int>(SCREEN_WIDHT * 0.5)))
     {
-        ++_scroll.Left;
-        ++_scroll.Right;
+        // Replace Mario
+        _scroll.Left = pos.x - (SCREEN_WIDHT * 0.5);
     }
-    else if (_scroll.Left > 0
-            && pos.x <= _scroll.Left + (_scroll.Right * 0.3))
-    {
-        --_scroll.Left;
-        --_scroll.Right;
-    }
+
+    _scroll.Right = _scroll.Left + static_cast<float>(SCREEN_WIDHT);
 
     /** Implémenter la même chose avec les ordonnées **/
 

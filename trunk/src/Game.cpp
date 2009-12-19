@@ -16,15 +16,13 @@ Game::~Game()
 
 void Game::drawAll(void)
 {
-    sf::View* view = new sf::View;
-    view->SetFromRect(_map.getScrolling());
+    sf::View view;
+    view.SetFromRect(_map.getScrolling());
 
-    this->SetView(*view);
+    this->SetView(view);
 
     _map.drawMap(*this);
     Draw(*_mario);
-
-    delete view;
 }
 
 void Game::evolue(void)
@@ -59,11 +57,5 @@ void Game::checkEvent(void)
     if (input.IsKeyDown(sf::Key::B))
         this->SetFramerateLimit(60);
 
-   /* if (input.IsMouseButtonDown(sf::Mouse::Left))
-        std::cout << std::endl << static_cast<int>(_mario->GetPosition().x / 32) << " et "
-        << static_cast<int>(_mario->GetPosition().y / 32);*/
-
-    cout << _mario->GetPosition().x << " et " << _mario->GetPosition().x + 24 << endl;
-    system("cls");
-    //if (input.IsKeyDown(sf::Key::B))
+    //cout << input.GetMouseX() << " et " << input.GetMouseY() << endl, system("cls");
 }
