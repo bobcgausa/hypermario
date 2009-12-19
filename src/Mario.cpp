@@ -46,6 +46,8 @@ void Mario::fall(void)
 {
     int caseX = static_cast<int>(this->GetPosition().x / 32);
     int caseX2 = static_cast<int>((this->GetPosition().x + 23) / 32);
+
+    // L'addition avec _vyF permet de prédire la case par rapport à la vitesse de la chute de Mario
     int caseY = static_cast<int>((this->GetPosition().y + 24 + _vyF) / 32);
 
     if (_map->getTiles(caseX, caseY).type != SKY
@@ -53,6 +55,8 @@ void Mario::fall(void)
     {
         int y = static_cast<int>(this->GetPosition().y);
 
+        // Si Mario n'est pas sur le sol lors de la détection d'une case
+        // On cherche la case suivante
         while ((y + 24) % 32 != 0)
             ++y;
         this->SetY(y);
@@ -65,6 +69,7 @@ void Mario::fall(void)
 
     this->Move(0, _vyF);
 
+    // Vitesse max
     if (_vyF < 5)
         _vyF += 0.1;
 }
@@ -85,13 +90,14 @@ void Mario::evolue(WHAT action)
         int caseY2 = static_cast<int>((this->GetPosition().y + 23) / 32);
 
         if (_map->getTiles(caseX, caseY).type == SKY
-            && _map->getTiles(caseX, caseY2).type == SKY)
+        && _map->getTiles(caseX, caseY2).type == SKY)
         {
             this->Move(vx, 0);
         }
 
         caseX = static_cast<int>(this->GetPosition().x / 32);
 
+        // Si la case sous Mario est vide, alors Mario tombe
         if (_status == ON_THE_GROUND && _map->getTiles(caseX, caseY + 1).type == SKY)
             _status = FALL;
     }

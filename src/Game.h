@@ -27,6 +27,8 @@ public:
 private:
     Map _map;
     Mario* _mario;
+
+    std::list<Ennemy* > _ennemys;
 };
 
 #endif // GAME_H
