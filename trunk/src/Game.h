@@ -10,6 +10,9 @@ const int SCREEN_WIDHT = 640;
 
 #include "Map.h"
 #include "Mario.h"
+#include "Ennemy.h"
+
+#include <list>
 
 class Game : public sf::RenderWindow
 {
@@ -25,6 +28,7 @@ public:
     void evolue(void);
 
 private:
+    void loadEnnemys(void);
     Map _map;
     Mario* _mario;
 

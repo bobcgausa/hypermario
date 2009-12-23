@@ -1,5 +1,6 @@
 #include "Game.h"
 #include <iostream>
+#include <fstream>
 
 using std::cout;
 using std::endl;
@@ -7,11 +8,43 @@ using std::endl;
 Game::Game() : sf::RenderWindow(sf::VideoMode(SCREEN_WIDHT, SCREEN_HEIGHT), "Hyper Mario")
 {
     _mario = new Mario(&_map);
+
+    this->loadEnnemys() ;
 }
 
 Game::~Game()
 {
     delete _mario;
+
+    // Clear list
+    std::list<Ennemy *>::iterator it;
+    for (it = _ennemys.begin(); it != _ennemys.end(); ++it)
+        delete *it;
+}
+
+void Game::loadEnnemys(void)
+{
+    std::ifstream file("media/1.enn") ;
+    if (!file.is_open())
+        std::exit(1);
+
+    while (file.good())
+    {
+        Ennemy* enn = NULL;
+        char c;
+        file >> c;
+
+        if (c == 'G')
+            enn = new Goomba(&_map);
+
+        int x, y;
+        file >> x >> y;
+        enn->SetPosition(x, y);
+
+        _ennemys.push_back(enn);
+    }
+
+    file.close();
 }
 
 void Game::drawAll(void)
@@ -22,13 +55,23 @@ void Game::drawAll(void)
     this->SetView(view);
 
     _map.drawMap(*this);
+
     Draw(*_mario);
+
+    std::list<Ennemy *>::iterator it;
+    for (it = _ennemys.begin(); it != _ennemys.end(); ++it)
+        Draw(**it);
+
 }
 
 void Game::evolue(void)
 {
     _mario->evolue(_mario->status());
     _map.refreshScrolling(_mario->GetPosition());
+
+    std::list<Ennemy *>::iterator it;
+    for (it = _ennemys.begin(); it != _ennemys.end(); ++it)
+        (*it)->evolue() ;
 }
 
 void Game::checkEvent(void)

@@ -1,7 +1,6 @@
 #ifndef MARIO_H
 #define MARIO_H
 
-#include <SFML/Graphics.hpp>
 #include "Map.h"
 
 enum WHAT
