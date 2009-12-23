@@ -14,7 +14,7 @@ Mario::Mario(Map* map) : sf::Sprite()
     SetImage(_img);
     Resize(24.0f, 24.0f);
     SetY(264.0f);
-    SetX(22.0f);
+    SetX(36.0f);
 
     _vyJ = -4;
     _vyF = 0.1;
@@ -89,7 +89,8 @@ void Mario::evolue(WHAT action)
         int caseY = static_cast<int>(this->GetPosition().y / 32);
         int caseY2 = static_cast<int>((this->GetPosition().y + 23) / 32);
 
-        if (_map->getTiles(caseX, caseY).type == SKY
+        if (this->GetPosition().x > 0
+        && _map->getTiles(caseX, caseY).type == SKY
         && _map->getTiles(caseX, caseY2).type == SKY)
         {
             this->Move(vx, 0);
