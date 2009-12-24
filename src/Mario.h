@@ -8,12 +8,21 @@ enum WHAT
     LEFT, RIGHT, JUMP, FALL, ON_THE_GROUND
 };
 
+enum EFFECT
+{
+    NOTHING, MARIO_DEAD, ENNEMI_DEAD
+} ;
+
+class Ennemy;
+
 class Mario : public sf::Sprite
 {
 public:
     Mario(Map*);
 
     void evolue(WHAT action = ON_THE_GROUND);
+
+    EFFECT isCollide(const Ennemy* ) ;
 
     WHAT& status() ;
 

@@ -1,5 +1,6 @@
 #include "Mario.h"
 #include <iostream>
+#include "Ennemy.h"
 
 using std::cout;
 using std::endl;
@@ -112,6 +113,33 @@ void Mario::evolue(WHAT action)
     {
         this->fall();
     }
+}
+
+EFFECT Mario::isCollide(const Ennemy* enn)
+{
+    int x = static_cast<int>(this->GetPosition().x);
+    int enn_x = static_cast<int>(enn->GetPosition().x);
+
+    if ((x - 1 <= enn_x + 24 &&
+        x - 1 >= enn_x) ||
+        (enn_x - 1 <= x + 24 &&
+        enn_x - 1 >= x))
+        {
+            if (this->_status == ON_THE_GROUND)
+                return MARIO_DEAD;
+            else if (this->_status == JUMP)
+                return NOTHING;
+            else if (this->_status == FALL)
+            {
+                int y = static_cast<int>(this->GetPosition().y);
+                int enn_y = static_cast<int>(enn->GetPosition().y);
+
+                if (y + 24 >= enn_y)
+                    return ENNEMI_DEAD;
+            }
+        }
+
+    return NOTHING;
 }
 
 
