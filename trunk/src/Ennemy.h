@@ -2,7 +2,6 @@
 #define ENNEMY_H
 
 #include "Mario.h"
-
 /** Procéder par type ou par dérivation de classe ? **/
 
 /* enum ENNEMY
@@ -13,7 +12,7 @@
 class Ennemy : public sf::Sprite
 {
     public:
-        Ennemy();
+        Ennemy(Map* );
 
         virtual ~Ennemy();
 
@@ -21,24 +20,9 @@ class Ennemy : public sf::Sprite
 
     protected:
         WHAT _status;
-        sf::Image _img;
-};
-
-class Goomba : public Ennemy
-{
-    public:
-        Goomba(Map* ) ;
-
-        virtual ~Goomba() ;
-
-        virtual void evolue(void) ;
-        bool detectCollision(WHAT ) ;
-
-    private:
-        WHAT _direction;
         sf::Clock _clock;
+        sf::Image _img;
         Map* _map;
-
-} ;
+};
 
 #endif // ENNEMY_H

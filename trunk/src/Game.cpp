@@ -5,6 +5,9 @@
 using std::cout;
 using std::endl;
 
+#include "Goomba.h"
+#include "Flower.h"
+
 Game::Game() : sf::RenderWindow(sf::VideoMode(SCREEN_WIDHT, SCREEN_HEIGHT), "Hyper Mario")
 {
     _mario = new Mario(&_map);
@@ -24,7 +27,7 @@ Game::~Game()
 
 void Game::loadEnnemys(void)
 {
-    std::ifstream file("media/1.enn") ;
+    std::ifstream file("media/ennemys/1.enn") ;
     if (!file.is_open())
         std::exit(1);
 
@@ -36,6 +39,8 @@ void Game::loadEnnemys(void)
 
         if (c == 'G')
             enn = new Goomba(&_map);
+        else if (c == 'F')
+            enn = new Flower(&_map);
 
         int x, y;
         file >> x >> y;
@@ -58,9 +63,12 @@ void Game::drawAll(void)
 
     Draw(*_mario);
 
-    std::list<Ennemy *>::iterator it;
-    for (it = _ennemys.begin(); it != _ennemys.end(); ++it)
-        Draw(**it);
+    if (!_ennemys.empty())
+    {
+        std::list<Ennemy *>::iterator it;
+        for (it = _ennemys.begin(); it != _ennemys.end(); ++it)
+            Draw(**it);
+    }
 
 }
 
@@ -69,9 +77,28 @@ void Game::evolue(void)
     _mario->evolue(_mario->status());
     _map.refreshScrolling(_mario->GetPosition());
 
-    std::list<Ennemy *>::iterator it;
-    for (it = _ennemys.begin(); it != _ennemys.end(); ++it)
-        (*it)->evolue() ;
+    if (!_ennemys.empty())
+    {
+        std::list<Ennemy *>::iterator it;
+        for (it = _ennemys.begin(); it != _ennemys.end(); ++it)
+            (*it)->evolue() ;
+
+        for (it = _ennemys.begin(); it != _ennemys.end(); ++it)
+        {
+            EFFECT e = _mario->isCollide(*it);
+            if (e == MARIO_DEAD)
+                this->Close();
+            else if (e == ENNEMI_DEAD)
+            {
+                delete *it;
+                _ennemys.erase(it);
+
+                // Mario can't kill 2 ennemys at the same time
+                break;
+            }
+        }
+    }
+
 }
 
 void Game::checkEvent(void)
