@@ -9,6 +9,8 @@ Goomba::Goomba(Map* map) : Ennemy(map)
     this->Resize(24.0f, 24.0f);
 
     _direction = LEFT;
+
+    _id = GOOMBA;
 }
 
 Goomba::~Goomba()

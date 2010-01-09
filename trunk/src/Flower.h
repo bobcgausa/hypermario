@@ -10,6 +10,7 @@ class Flower : public Ennemy
         virtual ~Flower();
 
         virtual void evolue(void);
+
     private:
 };
 

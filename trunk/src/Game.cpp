@@ -67,7 +67,10 @@ void Game::drawAll(void)
     {
         std::list<Ennemy *>::iterator it;
         for (it = _ennemys.begin(); it != _ennemys.end(); ++it)
-            Draw(**it);
+            if ((*it)->draw())
+            {
+                Draw(**it);
+            }
     }
 
 }
@@ -87,7 +90,7 @@ void Game::evolue(void)
         {
             EFFECT e = _mario->isCollide(*it);
             if (e == MARIO_DEAD)
-                this->Close();
+                puts("AHAHA"), system("cls");
             else if (e == ENNEMI_DEAD)
             {
                 delete *it;
@@ -106,6 +109,8 @@ void Game::checkEvent(void)
     const sf::Input& input = this->GetInput();
     sf::Event Event;
     this->GetEvent(Event);
+
+
 
     // close window
     if (Event.Type == sf::Event::Closed)

@@ -1,6 +1,7 @@
 #include "Mario.h"
-#include <iostream>
 #include "Ennemy.h"
+
+#include <iostream>
 
 using std::cout;
 using std::endl;
@@ -17,8 +18,8 @@ Mario::Mario(Map* map) : sf::Sprite()
     SetY(264.0f);
     SetX(36.0f);
 
-    _vyJ = -4;
-    _vyF = 0.1;
+    _vyJ = -4.0f;
+    _vyF = 0.1f;
     _status = ON_THE_GROUND;
 }
 
@@ -90,11 +91,12 @@ void Mario::evolue(WHAT action)
         int caseY = static_cast<int>(this->GetPosition().y / 32);
         int caseY2 = static_cast<int>((this->GetPosition().y + 23) / 32);
 
-        if (this->GetPosition().x > 0
-        && _map->getTiles(caseX, caseY).type == SKY
-        && _map->getTiles(caseX, caseY2).type == SKY)
+            // Right limit and left limit
+        if (this->GetPosition().x + vx >= 0 && this->GetPosition().x + vx <= (_map->size() * 32)
+            && _map->getTiles(caseX, caseY).type == SKY
+            && _map->getTiles(caseX, caseY2).type == SKY)
         {
-            this->Move(vx, 0);
+                this->Move(vx, 0);
         }
 
         caseX = static_cast<int>(this->GetPosition().x / 32);
@@ -119,25 +121,49 @@ EFFECT Mario::isCollide(const Ennemy* enn)
 {
     int x = static_cast<int>(this->GetPosition().x);
     int enn_x = static_cast<int>(enn->GetPosition().x);
+    int y = static_cast<int>(this->GetPosition().y);
+    int enn_y = static_cast<int>(enn->GetPosition().y);
 
-    if ((x - 1 <= enn_x + 24 &&
-        x - 1 >= enn_x) ||
-        (enn_x - 1 <= x + 24 &&
-        enn_x - 1 >= x))
+        /* x-axis - right */
+    if (((x - 1 <= enn_x + 24 &&
+          x - 1 >= enn_x) ||
+        /* left */
+         (x + 24 >= enn_x - 1 &&
+          x <= enn_x - 1))
+
+          &&
+
+          /* y-axis - down */
+          ((y - 1 <= enn_y + 24 &&
+            y - 1 >= enn_y) ||
+            /* up */
+           (y + 24 >= enn_y - 1 &&
+            y <= enn_y - 1)))
+    {
+        if (this->_status == ON_THE_GROUND)
         {
-            if (this->_status == ON_THE_GROUND)
+            if (enn->draw())
                 return MARIO_DEAD;
-            else if (this->_status == JUMP)
-                return NOTHING;
-            else if (this->_status == FALL)
-            {
-                int y = static_cast<int>(this->GetPosition().y);
-                int enn_y = static_cast<int>(enn->GetPosition().y);
-
-                if (y + 24 >= enn_y)
-                    return ENNEMI_DEAD;
-            }
         }
+
+        else if (this->_status == JUMP)
+        {
+            if (enn->id() == FLOWER && enn->draw())
+                return MARIO_DEAD;
+            return NOTHING;
+        }
+        else if (this->_status == FALL)
+        {
+            if (enn->id() == FLOWER)
+            {
+                if (enn->draw())
+                    return MARIO_DEAD;
+                else
+                    return NOTHING;
+            }
+            return ENNEMI_DEAD;
+        }
+    }
 
     return NOTHING;
 }

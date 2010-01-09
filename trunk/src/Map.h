@@ -24,6 +24,7 @@ public:
 
     void refreshScrolling(const sf::Vector2f& ) ;
     sf::Rect<float> getScrolling(void) const;
+    int size(void) const;
 
 private:
     std::vector<std::vector<s_Tiles> > _tiles;

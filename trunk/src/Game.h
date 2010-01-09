@@ -32,6 +32,8 @@ private:
     Map _map;
     Mario* _mario;
 
+    sf::Clock _clock;
+
     std::list<Ennemy* > _ennemys;
 };
 
