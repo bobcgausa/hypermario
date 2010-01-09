@@ -100,6 +100,11 @@ void Map::drawMap(sf::RenderWindow& game)
     }
 }
 
+int Map::size(void) const
+{
+    return _tiles.size() ;
+}
+
 sf::Rect<float> Map::getScrolling() const
 {
     return _scroll;
