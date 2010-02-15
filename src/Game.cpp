@@ -1,6 +1,11 @@
+// Game.cpp
+// By Monsieur_JaKy for hypermario project
+
 #include "Game.h"
-#include <iostream>
-#include <fstream>
+
+#include <iostream> // std::cout and std::endl
+#include <fstream> // std::ifstream and public methodes
+#include <algorithm> // std::for_each
 
 using std::cout;
 using std::endl;
@@ -8,32 +13,32 @@ using std::endl;
 #include "Goomba.h"
 #include "Flower.h"
 
+// See http://www.siteduzero.com/forum-83-488033-p1-appel-de-std-for_each-sur-une-liste-des-pointeurs.html#r4647737
+// for the std::mem_fun and std::bind1st functionnement
+
 Game::Game() : sf::RenderWindow(sf::VideoMode(SCREEN_WIDHT, SCREEN_HEIGHT), "Hyper Mario")
 {
     _mario = new Mario(&_map);
 
-    this->loadEnnemys() ;
+    this->loadEnemys() ;
 }
 
 Game::~Game()
 {
+    // Mario
     delete _mario;
 
-    // Clear list
-    std::list<Ennemy *>::iterator it;
-    for (it = _ennemys.begin(); it != _ennemys.end(); ++it)
-        delete *it;
+    // Enemys
+    std::for_each(_Enemys.begin(), _Enemys.end(), std::bind1st(std::mem_fun(&Game::_deleteEnemy), this));
 }
 
-void Game::loadEnnemys(void)
+void Game::loadEnemys(void)
 {
-    std::ifstream file("media/ennemys/1.enn") ;
-    if (!file.is_open())
-        std::exit(1);
+    std::ifstream file("media/Enemys/1.enn") ;
 
     while (file.good())
     {
-        Ennemy* enn = NULL;
+        Enemy* enn = NULL;
         char c;
         file >> c;
 
@@ -42,66 +47,60 @@ void Game::loadEnnemys(void)
         else if (c == 'F')
             enn = new Flower(&_map);
 
+        // Set Enemy's position
         int x, y;
         file >> x >> y;
         enn->SetPosition(x, y);
-
-        _ennemys.push_back(enn);
+        _Enemys.push_back(enn);
     }
-
     file.close();
 }
 
 void Game::drawAll(void)
 {
+    // SetView (for scrolling)
     sf::View view;
     view.SetFromRect(_map.getScrolling());
 
     this->SetView(view);
 
+    // Map
     _map.drawMap(*this);
 
+    // Mario
     Draw(*_mario);
 
-    if (!_ennemys.empty())
-    {
-        std::list<Ennemy *>::iterator it;
-        for (it = _ennemys.begin(); it != _ennemys.end(); ++it)
-            if ((*it)->draw())
-            {
-                Draw(**it);
-            }
-    }
-
+    // Enemys
+    std::for_each(_Enemys.begin(), _Enemys.end(), std::bind1st(std::mem_fun(&Game::_drawEnemy), this)) ;
 }
 
 void Game::evolue(void)
 {
+    // Mario
     _mario->evolue(_mario->status());
+
+    // Map
     _map.refreshScrolling(_mario->GetPosition());
 
-    if (!_ennemys.empty())
+    // Enemys
+    std::for_each(_Enemys.begin(), _Enemys.end(), std::bind1st(std::mem_fun(&Game::_EnemyEvolue), this)) ;
+
+    // Test collides
+    std::list<Enemy *>::iterator it;
+    for (it = _Enemys.begin(); it != _Enemys.end(); ++it)
     {
-        std::list<Ennemy *>::iterator it;
-        for (it = _ennemys.begin(); it != _ennemys.end(); ++it)
-            (*it)->evolue() ;
-
-        for (it = _ennemys.begin(); it != _ennemys.end(); ++it)
+        EFFECT e = _mario->isCollide(*it);
+        if (e == MARIO_DEAD)
+            puts("AHAHA"), system("cls"); /** Change this **/
+        else if (e == ENNEMI_DEAD)
         {
-            EFFECT e = _mario->isCollide(*it);
-            if (e == MARIO_DEAD)
-                puts("AHAHA"), system("cls");
-            else if (e == ENNEMI_DEAD)
-            {
-                delete *it;
-                _ennemys.erase(it);
+            delete *it;
+            _Enemys.erase(it);
 
-                // Mario can't kill 2 ennemys at the same time
-                break;
-            }
+            // Mario can't kill 2 Enemys at the same time, so break
+            break;
         }
     }
-
 }
 
 void Game::checkEvent(void)
@@ -110,7 +109,7 @@ void Game::checkEvent(void)
     sf::Event Event;
     this->GetEvent(Event);
 
-
+    // float time = _clock.GetElapsedTime() ;
 
     // close window
     if (Event.Type == sf::Event::Closed)
@@ -131,6 +130,22 @@ void Game::checkEvent(void)
         this->SetFramerateLimit(10);
     if (input.IsKeyDown(sf::Key::B))
         this->SetFramerateLimit(60);
+}
 
-    //cout << input.GetMouseX() << " et " << input.GetMouseY() << endl, system("cls");
+// Private functions about Enemys (used with std::for_each)
+
+void Game::_drawEnemy(const Enemy* Enemy)
+{
+    if (Enemy->draw())
+        this->Draw(*Enemy) ;
+}
+
+void Game::_EnemyEvolue(Enemy* enn)
+{
+    enn->evolue() ;
+}
+
+void Game::_deleteEnemy(Enemy* enn)
+{
+    delete enn;
 }

@@ -1,4 +1,6 @@
-#include <SFML/Graphics.hpp>
+// main.cpp
+// By Monsieur_JaKy for hypermario project
+
 #include "Game.h"
 
 int main(void)
@@ -18,8 +20,6 @@ int main(void)
         game.drawAll();
 
         game.Display();
-
-        sf::Sleep(0.001);
     }
 
     return EXIT_SUCCESS;

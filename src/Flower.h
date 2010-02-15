@@ -1,9 +1,13 @@
+// Flower.h
+// By Monsieur_JaKy for hypermario project
+
+
 #ifndef FLOWER_H
 #define FLOWER_H
 
-#include "Ennemy.h"
+#include "Enemy.h"
 
-class Flower : public Ennemy
+class Flower : public Enemy
 {
     public:
         Flower(Map* );

@@ -1,10 +1,11 @@
+// Flower.cpp
+// By Monsieur_JaKy for hypermario project
+
 #include "Flower.h"
 
-#include <cstdio>
-
-Flower::Flower(Map* map) : Ennemy(map)
+Flower::Flower(Map* map) : Enemy(map)
 {
-    _img.LoadFromFile("media/ennemys/flower.bmp");
+    _img.LoadFromFile("media/Enemys/flower.bmp");
     _img.CreateMaskFromColor(sf::Color(208, 214, 226));
 
     this->SetImage(_img);
@@ -22,9 +23,9 @@ void Flower::evolue(void)
 {
     float time = _clock.GetElapsedTime() ;
 
-    if (time >= 1)
+    if (time >= 1.f)
     {
-        _draw = _draw == false ? true : false;
+        _draw = !_draw;
         _clock.Reset() ;
     }
 

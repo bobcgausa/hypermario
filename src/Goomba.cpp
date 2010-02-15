@@ -1,8 +1,11 @@
+// Goomba.cpp
+// By Monsieur_JaKy for hypermario project
+
 #include "Goomba.h"
 
-Goomba::Goomba(Map* map) : Ennemy(map)
+Goomba::Goomba(Map* map) : Enemy(map)
 {
-    _img.LoadFromFile("media/ennemys/goomba.bmp");
+    _img.LoadFromFile("media/Enemys/goomba.bmp");
     _img.CreateMaskFromColor(sf::Color(208, 214, 226));
 
     this->SetImage(_img);
@@ -19,9 +22,12 @@ Goomba::~Goomba()
 
 bool Goomba::detectCollision(WHAT direction)
 {
+    /** Remplacer 24 par une constante > pas de nombre magique **/
+
     int caseX = static_cast<int>((this->GetPosition().x + (direction == RIGHT ? 24 : -1)) / 32);
     int caseY = static_cast<int>(this->GetPosition().y / 32);
 
+    /** Tester également le bord droit (pas besoin à priori, cf fin des niveaux des Mario Bros) **/
     if (this->GetPosition().x > 0 && _map->getTiles(caseX, caseY).type == SKY)
         return false;
 
@@ -42,6 +48,7 @@ void Goomba::evolue(void)
         }
         else
         {
+            // Change the direction
             _direction = (_direction == LEFT ? RIGHT : LEFT);
         }
     }

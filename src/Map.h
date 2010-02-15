@@ -1,8 +1,11 @@
+// Map.h
+// By Monsieur_JaKy for hypermario project
+
 #ifndef MAP_H
 #define MAP_H
 
-#include <SFML/Graphics.hpp>
-#include <vector>
+#include <SFML/Graphics.hpp> // sf::RenderWindow, sf::Sprite, sf::Vector2f, etc...
+#include <vector> // _tiles and _img_tiles
 
 enum TYPE
 {

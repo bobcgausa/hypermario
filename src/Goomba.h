@@ -1,9 +1,12 @@
+// Goomba.h
+// By Monsieur_JaKy for hypermario project
+
 #ifndef GOOMBA_H
 #define GOOMBA_H
 
-#include "Ennemy.h"
+#include "Enemy.h"
 
-class Goomba : public Ennemy
+class Goomba : public Enemy
 {
     public:
         Goomba(Map* ) ;

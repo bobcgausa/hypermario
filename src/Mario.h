@@ -1,3 +1,6 @@
+// Mario.cpp
+// By Monsieur_JaKy for hypermario project
+
 #ifndef MARIO_H
 #define MARIO_H
 
@@ -5,7 +8,7 @@
 
 enum WHAT
 {
-    LEFT, RIGHT, JUMP, FALL, ON_THE_GROUND
+    LEFT, RIGHT, JUMP, LITTLE_JUMP, FALL, ON_THE_GROUND
 };
 
 enum EFFECT
@@ -13,7 +16,7 @@ enum EFFECT
     NOTHING, MARIO_DEAD, ENNEMI_DEAD
 } ;
 
-class Ennemy;
+class Enemy;
 
 class Mario : public sf::Sprite
 {
@@ -22,7 +25,7 @@ public:
 
     void evolue(WHAT action = ON_THE_GROUND);
 
-    EFFECT isCollide(const Ennemy* ) ;
+    EFFECT isCollide(const Enemy* ) ;
 
     WHAT& status() ;
 
