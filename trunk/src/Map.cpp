@@ -1,7 +1,10 @@
+// Map.cpp
+// By Monsieur_JaKy for hypermario project
+
 #include "Map.h"
 #include "Game.h"
 
-#include <iostream>
+#include <iostream> // std::cout and std::endl
 
 using std::cout;
 using std::endl;
@@ -55,6 +58,9 @@ Map::Map()
             else if (map.GetPixel(i, j) == sf::Color::Color(155, 231, 54))
                 type = TUBE_BOTTOM2;
 
+            else
+                std::cerr << "Undefined type" << std::endl;
+
             _tiles[i][j].type = type;
             _tiles[i][j].spr.SetImage(_img_tiles[type]);
 
@@ -71,11 +77,11 @@ Map::Map()
 
 void Map::refreshScrolling(const sf::Vector2f& pos)
 {
-        // Check if Mario isn't at the right edge
+        // Check if Mario isn't at the right side
     if ((_scroll.Right < _tiles.size() * 32
         && pos.x >= _scroll.Left + static_cast<int>(SCREEN_WIDHT * 0.5))
 
-        // Or check if Mario isn't at the left edge
+        // Or check if Mario isn't at the left side
         || (_scroll.Left > 0
         && pos.x <= _scroll.Left + static_cast<int>(SCREEN_WIDHT * 0.5)))
     {
