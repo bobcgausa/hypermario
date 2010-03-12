@@ -43,3 +43,7 @@ SetRow :
 I think it is sufficient.
 
 Then other classes which models an animated sprite will overload it and may redefine Update, but it must call AnimatedSprite::Update() in it. They could also inherit privately and then redefine Update publicly, and call themselves the functions provided by AnimatedSprite.
+
+----
+
+Another idea would be to replace SetRow with SetFrame(int frame), with frame in range [0..NbFrames-1] (where NbFrames = NbRows*NbCols). Also, a currentFrame variable should be accessible. What do you think?
