@@ -1,0 +1,45 @@
+#summary AnimatedSprite, what to insert ?
+#labels Phase-Implementation
+
+= Introduction =
+
+This page will try to define what we should push in the class AnimatedSprite.
+
+
+= Details =
+
+I think we should use this interface :
+
+{{{
+class AnimatedSprite : sf::Sprite
+{
+  private: 
+    // ?
+
+  public:
+    AnimatedSprite(std::string const & ImageFileName, int NbRows, int NbCols, float FramesPerSecond);
+
+    int GetNbRows();
+    int GetNbCols();
+
+    void Update();
+
+    void SetRow(int Row);
+};
+}}}
+
+Constructor :
+ * ImageFileName : the file name the image to load (via ImageManager)
+ * NbRows : the number of rows the file contains
+ * NbCols : The number of columns the file contains
+ * FramesPerSecond : the number of frames per second.
+
+Update :
+ * Updates the sprite so it goes to the next frame (or the first if the actual one is the last) of the row if needed.
+
+SetRow :
+ * Row in the range [0 .. NbRows-1]
+
+I think it is sufficient.
+
+Then other classes which models an animated sprite will overload it and may redefine Update, but it must call AnimatedSprite::Update() in it. They could also inherit privately and then redefine Update publicly, and call themselves the functions provided by AnimatedSprite.
