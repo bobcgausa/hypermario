@@ -47,7 +47,7 @@ I think it is enough.
 
 Then, other classes which models an animated sprite will overload it and may redefine `Update`, but it must call `AnimatedSprite::Update()` in it. They could also inherit privately and then redefine `Update` publicly, and call themselves the functions provided by `AnimatedSprite`.
 
-----
+= Commentaries from members =
 
 In fact, the concept is to make a tileset composed of lines and columns :
 
@@ -79,13 +79,13 @@ Each `Update` call will test if the sprite must be changed in its row. The calls
 
 ----
 
-In order to make the creation of AnimatedSprites easier, a teste file could be used. It should contain informations about:
-* Name of the sprite
-* Path to the image file containing the spritesheet
-* Names of the animations and respective frame counts (NbRows and NbCols could be extrapolated from that
-More informations could be added, which would be ignored by the AnimatedSprite class, but would be useful to its descending classes (monster behaviour, walking/running speed, ...)
-To make these files more human-friendly, a very simple syntax should be used. Example:
+In order to make the creation of `AnimatedSprite` easier, a file could be used. It should contain informations about:
+ * Name of the sprite
+ * Path to the image file containing the spritesheet
+ * Names of the animations and respective frame counts (`NbRows` and `NbCols` could be extrapolated from that. More informations could be added, which would be ignored by the `AnimatedSprite` class, but would be useful to its descending classes (monster behaviour, walking/running speed, ...)
+To make these files more human-friendly, a very simple syntax should be used.
 
+Example:
 {{{
 RedKoopa
 file: images/red_koopa.png
@@ -94,8 +94,7 @@ animation: flying 4
 animation: shell 2   // 3 Rows, 4 Colums (max frame count = 4)
 }}}
 
-Alternatively, this file could also be written in XML if we want to look more "prefessional" ^^
-
+Alternatively, this file could also be written in XML if we want to look more "professional" ^^ :
 {{{
 <sprite name="RedKoopa">
     <image file="images/red_koopa.png"/>
@@ -107,4 +106,9 @@ Alternatively, this file could also be written in XML if we want to look more "p
 </sprite>
 }}}
 
-Also, AnimatedSprite would have a SetAnimation(string) method (replacing SetRow). Perhaps we should require all sprites to have a "standing" animation which would be used as a default animation when no other is selected or when the user requests an animation which wasn't defined.
+Also, `AnimatedSprite` would have a `SetAnimation(string)` method (replacing `SetRow`). Perhaps we should require all sprites to have a "standing" animation which would be used as a default animation when no other is selected or when the user requests an animation which wasn't defined.
+
+----
+
+That's a very good idea ! You put it on the main page ?
+Personnaly, I would prefer the XML version : more extensible !
