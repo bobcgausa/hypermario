@@ -49,10 +49,6 @@ Then, other classes which models an animated sprite will overload it and may red
 
 ----
 
-Another idea would be to replace `SetRow` with `SetFrame(int frame)`, with `frame` in range `[0..NbFrames-1]` (where `NbFrames = NbRows*NbCols`). Also, a `currentFrame` variable should be accessible. What do you think?
-
-----
-
 In fact, the concept is to make a tileset composed of lines and columns :
 
 || Img1 || Img2 || Img3 ||
@@ -80,3 +76,35 @@ while(App.IsOpened())
 }
 }}}
 Each `Update` call will test if the sprite must be changed in its row. The calls to `SetRow` chooses the row to display : each row models an animation.
+
+----
+
+In order to make the creation of AnimatedSprites easier, a teste file could be used. It should contain informations about:
+* Name of the sprite
+* Path to the image file containing the spritesheet
+* Names of the animations and respective frame counts (NbRows and NbCols could be extrapolated from that
+More informations could be added, which would be ignored by the AnimatedSprite class, but would be useful to its descending classes (monster behaviour, walking/running speed, ...)
+To make these files more human-friendly, a very simple syntax should be used. Example:
+
+{{{
+RedKoopa
+file: images/red_koopa.png
+animation: walking 4
+animation: flying 4
+animation: shell 2   // 3 Rows, 4 Colums (max frame count = 4)
+}}}
+
+Alternatively, this file could also be written in XML if we want to look more "prefessional" ^^
+
+{{{
+<sprite name="RedKoopa">
+    <image file="images/red_koopa.png"/>
+    <animations>
+        <animation name="walking" duration="4"/>
+        <animation name="flying" duration="4"/>
+        <animation name="shell" duration="2"/>
+    </animations>
+</sprite>
+}}}
+
+Also, AnimatedSprite would have a SetAnimation(string) method (replacing SetRow). Perhaps we should require all sprites to have a "standing" animation which would be used as a default animation when no other is selected or when the user requests an animation which wasn't defined.
